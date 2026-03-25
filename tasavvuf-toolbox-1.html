@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tasavvuf Toolbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Amiri:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black:        #040908;
+  --black-2:      #081210;
+  --black-3:      #0d1c18;
+  --black-4:      #162820;
+  --emerald:      #10b974;
+  --emerald-dim:  #0d9960;
+  --emerald-dark: #063d26;
+  --emerald-glow: #10b97433;
+  --emerald-faint:#10b97411;
+  --emerald-mid:  #10b97466;
+  --text-bright:  #e2f5ec;
+  --text-mid:     #6daa8a;
+  --text-dim:     #3a5e4a;
+  --border:       #1a3328;
+  --border-glow:  #10b97444;
+  --mono:         'JetBrains Mono', monospace;
+  --serif:        'Cinzel', serif;
+  --arabic:       'Amiri', serif;
+  --radius:       2px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--black);
+  color:var(--text-bright);
+  font-family:var(--mono);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* BG */
+.bg-grid{
+  position:fixed;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:48px 48px;
+  opacity:0.3;pointer-events:none;z-index:0;
+}
+.bg-glow{
+  position:fixed;top:-300px;left:50%;transform:translateX(-50%);
+  width:800px;height:600px;
+  background:radial-gradient(ellipse,var(--emerald-glow) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+}
+
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(4,9,8,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:1rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;
+}
+.header-left{display:flex;align-items:center;gap:1.2rem;}
+.logo-ar{
+  font-family:var(--arabic);font-size:2.8rem;color:var(--emerald);line-height:1;
+  text-shadow:0 0 30px var(--emerald-glow);
+  animation:pulse-glow 3s ease-in-out infinite;
+}
+@keyframes pulse-glow{
+  0%,100%{text-shadow:0 0 20px var(--emerald-glow);}
+  50%{text-shadow:0 0 50px var(--emerald),0 0 80px var(--emerald-glow);}
+}
+.logo-text h1{font-family:var(--serif);font-size:1.5rem;font-weight:900;letter-spacing:0.35em;color:var(--text-bright);}
+.logo-text p{font-size:0.6rem;letter-spacing:0.2em;color:var(--text-mid);text-transform:uppercase;margin-top:0.2rem;}
+.lang-select{
+  background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+  color:var(--emerald);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.1em;
+  padding:0.4rem 0.8rem;cursor:pointer;outline:none;
+  transition:border-color 0.3s;
+}
+.lang-select:hover{border-color:var(--emerald-dim);}
+
+/* NAV */
+nav{
+  position:relative;z-index:10;
+  background:var(--black-2);
+  border-bottom:1px solid var(--border);
+  padding:0 2rem;
+  display:flex;gap:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+nav::-webkit-scrollbar{display:none;}
+.nav-btn{
+  background:transparent;border:none;border-bottom:2px solid transparent;
+  color:var(--text-dim);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;
+  padding:0.9rem 1.2rem;cursor:pointer;white-space:nowrap;
+  transition:all 0.2s;text-transform:uppercase;
+}
+.nav-btn:hover{color:var(--text-mid);}
+.nav-btn.active{color:var(--emerald);border-bottom-color:var(--emerald);}
+
+/* MAIN */
+main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* PANELS */
+.panel{display:none;}
+.panel.active{display:block;animation:fade-in 0.3s ease;}
+@keyframes fade-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARD */
+.card{
+  background:var(--black-2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.75rem;margin-bottom:1.5rem;
+  box-shadow:0 0 40px var(--emerald-faint);
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--emerald-dim),transparent);
+}
+.card-title{
+  font-family:var(--serif);font-size:0.85rem;letter-spacing:0.25em;
+  color:var(--text-mid);text-transform:uppercase;margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:0.6rem;
+}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* FORM ELEMENTS */
+label.lbl{display:block;font-size:0.65rem;letter-spacing:0.18em;color:var(--text-mid);text-transform:uppercase;margin-bottom:0.4rem;}
+input[type=text],input[type=number],textarea,select.sel{
+  width:100%;background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+  color:var(--text-bright);font-family:var(--mono);font-size:0.9rem;
+  padding:0.65rem 0.9rem;outline:none;transition:border-color 0.3s,box-shadow 0.3s;
+}
+input[type=text]:focus,input[type=number]:focus,textarea:focus,select.sel:focus{
+  border-color:var(--emerald-dim);box-shadow:0 0 20px var(--emerald-faint);
+}
+select.sel{
+  cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M0 0l5 7 5-7z' fill='%2310b974'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 0.8rem center;padding-right:2rem;
+}
+textarea{resize:vertical;min-height:90px;font-size:0.85rem;}
+input[type=text].arabic-input{
+  font-family:var(--arabic);font-size:1.4rem;direction:rtl;text-align:right;
+  letter-spacing:0.05em;color:var(--emerald);
+}
+.row{margin-bottom:1.1rem;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:560px){.grid-2{grid-template-columns:1fr;}}
+
+/* BUTTONS */
+.btn{
+  background:transparent;border:1px solid var(--emerald-dim);border-radius:var(--radius);
+  color:var(--emerald);font-family:var(--serif);font-size:0.8rem;font-weight:600;
+  letter-spacing:0.25em;padding:0.75rem 1.5rem;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;
+  transition:all 0.25s;text-transform:uppercase;position:relative;overflow:hidden;
+}
+.btn::before{content:'';position:absolute;inset:0;background:var(--emerald-faint);transform:scaleX(0);transform-origin:left;transition:transform 0.25s;}
+.btn:hover::before{transform:scaleX(1);}
+.btn:hover{border-color:var(--emerald);box-shadow:0 0 25px var(--emerald-glow);color:var(--text-bright);}
+.btn-full{width:100%;}
+.btn-sm{padding:0.45rem 0.9rem;font-size:0.7rem;letter-spacing:0.15em;}
+.btn-danger{border-color:#4a1515;color:#c06060;}
+.btn-danger:hover{border-color:#8b2020;box-shadow:0 0 20px #8b202033;}
+
+/* RESULT BOX */
+.result-box{
+  background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem;margin-top:1rem;
+}
+.result-arabic{font-family:var(--arabic);font-size:2rem;color:var(--emerald);direction:rtl;text-align:right;line-height:1.4;}
+.result-value{font-size:2.5rem;font-weight:300;color:var(--emerald);letter-spacing:0.05em;text-align:center;padding:0.5rem 0;}
+.result-label{font-size:0.65rem;letter-spacing:0.2em;color:var(--text-mid);text-transform:uppercase;text-align:center;margin-bottom:0.25rem;}
+
+/* LETTER BREAKDOWN */
+.breakdown{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;}
+.letter-chip{
+  background:var(--black-4);border:1px solid var(--border);border-radius:var(--radius);
+  padding:0.4rem 0.7rem;display:flex;flex-direction:column;align-items:center;gap:0.15rem;
+  min-width:52px;transition:border-color 0.2s;
+}
+.letter-chip:hover{border-color:var(--emerald-dim);}
+.letter-chip .ar{font-family:var(--arabic);font-size:1.3rem;color:var(--emerald);}
+.letter-chip .val{font-size:0.65rem;color:var(--text-mid);}
+.letter-chip .lat{font-size:0.55rem;color:var(--text-dim);letter-spacing:0.05em;}
+
+/* ARABIC KEYBOARD */
+.ar-keyboard{
+  display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.75rem;
+  padding:1rem;background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+}
+.ar-key{
+  background:var(--black-4);border:1px solid var(--border);border-radius:var(--radius);
+  color:var(--text-bright);font-family:var(--arabic);font-size:1.1rem;
+  width:42px;height:42px;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;transition:all 0.15s;
+  position:relative;
+}
+.ar-key span.key-val{font-size:0.5rem;color:var(--text-dim);font-family:var(--mono);}
+.ar-key:hover{background:var(--emerald-dark);border-color:var(--emerald-dim);color:var(--emerald);}
+.ar-key-del{font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);width:52px;}
+.ar-key-space{width:100px;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;color:var(--text-dim);}
+
+/* COLOR PREVIEW */
+.color-preview{
+  width:100%;height:80px;border:1px solid var(--border);border-radius:var(--radius);
+  margin-top:0.75rem;transition:background 0.3s;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:0.75rem;letter-spacing:0.1em;
+}
+
+/* AUDIO VIZ */
+.audio-viz{
+  height:60px;background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+  margin-top:0.75rem;display:flex;align-items:center;justify-content:center;gap:3px;
+  overflow:hidden;
+}
+.viz-bar{
+  width:4px;background:var(--emerald);border-radius:2px;height:8px;
+  transition:height 0.1s ease;opacity:0.7;
+}
+
+/* MAP LINK */
+.map-link{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  color:var(--emerald);font-size:0.8rem;letter-spacing:0.1em;
+  text-decoration:none;border-bottom:1px solid var(--emerald-dark);
+  transition:border-color 0.2s;padding-bottom:1px;
+}
+.map-link:hover{border-color:var(--emerald);}
+
+/* ELEMENT CHIPS */
+.element-row{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;}
+.el-chip{
+  padding:0.4rem 0.9rem;border-radius:var(--radius);font-size:0.8rem;letter-spacing:0.05em;
+  border:1px solid;display:flex;align-items:center;gap:0.4rem;
+}
+.el-fire{background:#1a0a04;border-color:#8b3010;color:#e07040;}
+.el-air{background:#04101a;border-color:#105880;color:#40a0e0;}
+.el-water{background:#04101a;border-color:#0d5060;color:#30c0d0;}
+.el-earth{background:#0d0e04;border-color:#5a5010;color:#b0a030;}
+
+/* SCRIPT OUTPUT */
+.script-output{
+  background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem;margin-top:0.5rem;
+}
+.script-row{
+  display:flex;align-items:flex-start;gap:1rem;padding:0.6rem 0;
+  border-bottom:1px solid var(--border);
+}
+.script-row:last-child{border-bottom:none;}
+.script-lang{font-size:0.6rem;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;min-width:90px;padding-top:0.3rem;}
+.script-text{font-size:1.1rem;color:var(--text-bright);line-height:1.5;flex:1;}
+.script-ar,.script-syr,.script-ott,.script-heb,.script-uyg{font-family:var(--arabic);direction:rtl;text-align:right;}
+.script-egy{font-size:1.5rem;}
+.script-dev{font-family:'Noto Sans Devanagari',var(--arabic);}
+
+/* COMBO RESULTS */
+.combo-list{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.75rem;}
+.combo-item{
+  background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:0.75rem 1rem;display:flex;align-items:center;justify-content:space-between;
+  animation:slide-in 0.2s ease;
+}
+@keyframes slide-in{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.combo-arabic{font-family:var(--arabic);font-size:1.4rem;color:var(--emerald);direction:rtl;}
+.combo-formula{font-size:0.7rem;color:var(--text-mid);}
+
+/* EBCED TABLE */
+.ebced-table-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:0.5rem;margin-top:0.75rem;
+}
+.ebced-cell{
+  background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:0.6rem;text-align:center;transition:border-color 0.2s;
+}
+.ebced-cell:hover{border-color:var(--emerald-dim);}
+.ebced-cell .ar{font-family:var(--arabic);font-size:1.4rem;color:var(--emerald);display:block;}
+.ebced-cell .val{font-size:0.75rem;color:var(--text-mid);display:block;}
+.ebced-cell .name{font-size:0.55rem;color:var(--text-dim);display:block;letter-spacing:0.05em;}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;gap:0.75rem;}
+.toggle-wrap input[type=checkbox]{display:none;}
+.toggle{
+  position:relative;display:inline-block;width:44px;height:22px;
+  background:var(--black-4);border:1px solid var(--border);border-radius:22px;cursor:pointer;
+  transition:all 0.3s;
+}
+.toggle::after{
+  content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;
+  background:var(--text-dim);border-radius:50%;transition:all 0.3s;
+}
+input[type=checkbox]:checked+.toggle{background:var(--emerald-dark);border-color:var(--emerald-dim);}
+input[type=checkbox]:checked+.toggle::after{transform:translateX(22px);background:var(--emerald);}
+
+/* ABOUT */
+.about-section{text-align:center;padding:2rem 0;}
+.about-logo-ar{font-family:var(--arabic);font-size:5rem;color:var(--emerald);display:block;margin-bottom:0.5rem;text-shadow:0 0 60px var(--emerald-glow);}
+.about-title{font-family:var(--serif);font-size:2rem;letter-spacing:0.3em;margin-bottom:0.5rem;}
+.about-sub{font-size:0.7rem;letter-spacing:0.2em;color:var(--text-mid);text-transform:uppercase;margin-bottom:2rem;}
+.about-card{
+  background:var(--black-2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem;margin-bottom:1rem;text-align:left;
+}
+.about-card h3{font-family:var(--serif);font-size:0.9rem;letter-spacing:0.2em;color:var(--emerald);margin-bottom:0.75rem;text-transform:uppercase;}
+.about-card p{font-size:0.8rem;line-height:1.7;color:var(--text-mid);}
+.about-card a{color:var(--emerald);text-decoration:none;border-bottom:1px solid var(--emerald-dark);}
+.about-card a:hover{border-color:var(--emerald);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:1.25rem 0;}
+
+/* MSG */
+.msg{padding:0.75rem 1rem;border-radius:var(--radius);font-size:0.8rem;margin-top:0.75rem;letter-spacing:0.05em;}
+.msg-error{background:#1a0808;border:1px solid #6b1515;color:#e07070;}
+.msg-info{background:var(--black-3);border:1px solid var(--border);color:var(--text-mid);}
+
+/* BADGE */
+.badge{
+  display:inline-block;background:var(--emerald-dark);border:1px solid var(--emerald-dim);
+  color:var(--emerald);font-size:0.6rem;letter-spacing:0.1em;padding:0.2rem 0.5rem;border-radius:var(--radius);
+}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:10;border-top:1px solid var(--border);
+  padding:1.5rem 2rem;text-align:center;
+  font-size:0.6rem;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;
+}
+
+/* COLOR PICKER */
+input[type=color]{
+  width:48px;height:36px;border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--black-3);cursor:pointer;padding:2px;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--black);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:var(--emerald-dark);}
+
+/* ESMA CARD */
+.esma-card{
+  background:var(--black-3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.25rem;cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+}
+.esma-card:hover{border-color:var(--emerald-dim);box-shadow:0 0 15px var(--emerald-faint);}
+.esma-card.selected{border-color:var(--emerald);background:var(--emerald-dark);}
+.esma-ar{font-family:var(--arabic);font-size:1.6rem;color:var(--emerald);direction:rtl;}
+.esma-name{font-size:0.7rem;letter-spacing:0.1em;color:var(--text-mid);}
+.esma-val{font-size:0.8rem;color:var(--text-dim);}
+.esma-detail{
+  margin-top:0.5rem;padding:1rem 1.25rem;
+  background:var(--black-4);border:1px solid var(--border-glow);border-radius:var(--radius);
+  font-size:0.8rem;color:var(--text-mid);line-height:1.8;
+  display:none;animation:fade-in 0.2s ease;
+}
+.esma-detail.open{display:block;}
+.esma-meaning{font-size:1rem;color:var(--text-bright);margin-bottom:0.4rem;}
+
+/* VEFK GRID */
+.vefk-wrap{
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;
+}
+.vefk-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:6px;width:100%;max-width:560px;
+}
+.vefk-cell{
+  background:var(--black-3);border:1px solid var(--emerald-dark);border-radius:var(--radius);
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-family:var(--arabic);font-size:clamp(1.2rem,4vw,2rem);
+  color:var(--emerald);direction:rtl;
+  text-shadow:0 0 20px var(--emerald-glow);
+  transition:all 0.3s;
+  position:relative;overflow:hidden;
+}
+.vefk-cell::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,var(--emerald-faint) 0%,transparent 70%);
+  opacity:0;transition:opacity 0.3s;
+}
+.vefk-cell:hover::before{opacity:1;}
+.vefk-cell:hover{border-color:var(--emerald);box-shadow:0 0 20px var(--emerald-glow);}
+
+/* NEY BUTTON */
+.ney-btn{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;
+  background:var(--black-3);border:1px solid var(--emerald-dim);border-radius:50%;
+  width:48px;height:48px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;transition:all 0.3s;
+  box-shadow:0 0 20px var(--emerald-glow);
+}
+.ney-btn:hover{border-color:var(--emerald);box-shadow:0 0 30px var(--emerald);}
+.ney-btn.playing{border-color:var(--emerald);background:var(--emerald-dark);}
+
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<header>
+  <div class="header-left">
+    <div class="logo-ar">ط</div>
+    <div class="logo-text">
+      <h1>TASAVVUF</h1>
+      <p data-i18n="subtitle">Toolbox · Esoterik Hesap Araçları</p>
+    </div>
+  </div>
+  <select class="lang-select" id="langSelect" onchange="setLang(this.value)">
+    <option value="tr">TR · Türkçe</option>
+    <option value="en">EN · English</option>
+    <option value="id">ID · Indonesian</option>
+  </select>
+</header>
+
+<nav id="mainNav">
+  <button class="nav-btn active" onclick="showPanel('p1',this)" data-i18n="nav1">Ebced Hesap</button>
+  <button class="nav-btn" onclick="showPanel('p2',this)" data-i18n="nav2">Ebced → Harf</button>
+  <button class="nav-btn" onclick="showPanel('p3',this)" data-i18n="nav3">Renk ↔ Ebced</button>
+  <button class="nav-btn" onclick="showPanel('p4',this)" data-i18n="nav4">Ebced → Ses</button>
+  <button class="nav-btn" onclick="showPanel('p5',this)" data-i18n="nav5">Ebced → Konum</button>
+  <button class="nav-btn" onclick="showPanel('p6',this)" data-i18n="nav6">Karakter Çeviri</button>
+  <button class="nav-btn" onclick="showPanel('p7',this)" data-i18n="nav7">Harf → Element</button>
+  <button class="nav-btn" onclick="showPanel('p8',this)" data-i18n="nav8">Hakkında</button>
+  <button class="nav-btn" onclick="showPanel('p9',this)" data-i18n="nav9">Esma Bulucu</button>
+  <button class="nav-btn" onclick="showPanel('p10',this)" data-i18n="nav10">Vefk</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 1: Klasik Ebced Hesabı
+═══════════════════════════════════════════════ -->
+<div class="panel active" id="p1">
+  <div class="card">
+    <div class="card-title" data-i18n="p1_title">Klasik Ebced Hesabı</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p1_input_label">Metin Gir (Arapça veya Latin)</label>
+      <input type="text" id="p1Input" class="arabic-input" dir="rtl" placeholder="بسم الله" oninput="p1LiveUpdate()"/>
+    </div>
+    <div class="row">
+      <label class="lbl" data-i18n="p1_keyboard_label">Arapça Klavye</label>
+      <div class="ar-keyboard" id="arKeyboard"></div>
+    </div>
+    <div style="display:flex;gap:0.75rem;">
+      <button class="btn btn-full" onclick="p1Calculate()" data-i18n="calc_btn">Hesapla</button>
+      <button class="btn btn-sm btn-danger" onclick="p1Clear()">✕</button>
+    </div>
+    <div id="p1Msg"></div>
+  </div>
+  <div class="card" id="p1Result" style="display:none;">
+    <div class="card-title" data-i18n="p1_result_title">Sonuç</div>
+    <div class="result-label" data-i18n="total_value">Toplam Değer</div>
+    <div class="result-value" id="p1Total">0</div>
+    <div class="divider"></div>
+    <div class="result-label" data-i18n="breakdown">Harf Dökümü</div>
+    <div class="breakdown" id="p1Breakdown"></div>
+  </div>
+  <div class="card">
+    <div class="card-title" data-i18n="ebced_table">Ebced Tablosu</div>
+    <div class="ebced-table-grid" id="p1Table"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 2: Ebced → Arapça Harf Kombinasyonları
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p2">
+  <div class="card">
+    <div class="card-title" data-i18n="p2_title">Ebced → Arapça Harf Kombinasyonları</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p2_input_label">Ebced Değeri Gir</label>
+      <input type="number" id="p2Input" min="1" placeholder="786" onkeydown="if(event.key==='Enter')p2Calculate()"/>
+    </div>
+    <div class="grid-2">
+      <div>
+        <label class="lbl" data-i18n="p2_sort">Sıralama</label>
+        <select class="sel" id="p2Sort" onchange="p2LastParams=null">
+          <option value="default" data-i18n="sort_default">Varsayılan</option>
+          <option value="fewest" data-i18n="sort_fewest">Az Harf</option>
+          <option value="highest" data-i18n="sort_highest">Yüksek Değer</option>
+          <option value="lowest" data-i18n="sort_lowest">Düşük Değer</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl" data-i18n="p2_pagesize">Sayfa Boyutu</label>
+        <select class="sel" id="p2PageSize">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="toggle-wrap">
+        <input type="checkbox" id="p2Repeat" onchange="p2LastParams=null"/>
+        <label class="toggle" for="p2Repeat"></label>
+        <span style="font-size:0.75rem;color:var(--text-mid);" data-i18n="p2_repeat">Tekrar İzni</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.75rem;">
+      <button class="btn btn-full" onclick="p2Calculate()" data-i18n="calc_btn">Hesapla</button>
+      <button class="btn btn-sm btn-danger" onclick="p2Reset()">✕</button>
+    </div>
+    <div id="p2Msg"></div>
+  </div>
+  <div id="p2ResultSection" style="display:none;">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <span class="card-title" style="margin-bottom:0;" id="p2ResultTitle">Kombinasyonlar</span>
+          <span class="badge" id="p2Count">0</span>
+        </div>
+      </div>
+      <div class="combo-list" id="p2List"></div>
+      <div id="p2Exhausted" style="display:none;margin-top:0.75rem;" class="msg msg-info" data-i18n="p2_exhausted">Tüm kombinasyonlar gösterildi.</div>
+      <button class="btn btn-full" id="p2ContinueBtn" style="display:none;margin-top:0.75rem;" onclick="p2LoadBatch()" data-i18n="p2_more">Daha Fazla</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 3: Renk ↔ Ebced
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p3">
+  <!-- Text → Ebced → Color -->
+  <div class="card">
+    <div class="card-title" data-i18n="p3_t1">Metin → Ebced → Renk</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p3_text_input">Arapça / Latin Metin</label>
+      <input type="text" id="p3TextInput" placeholder="الله" oninput="p3TextToColor()"/>
+    </div>
+    <div id="p3TextResult" style="display:none;">
+      <div class="color-preview" id="p3ColorPreview">—</div>
+      <div style="display:flex;gap:1rem;margin-top:0.75rem;flex-wrap:wrap;">
+        <div><div class="result-label" data-i18n="ebced_val">Ebced</div><div style="font-size:1.4rem;color:var(--emerald);" id="p3EbcedVal">0</div></div>
+        <div><div class="result-label">HEX</div><div style="font-size:1rem;color:var(--text-mid);" id="p3HexVal">#000000</div></div>
+        <div><div class="result-label">RGB</div><div style="font-size:1rem;color:var(--text-mid);" id="p3RgbVal">rgb(0,0,0)</div></div>
+      </div>
+    </div>
+  </div>
+  <!-- Color → Ebced → Combinations -->
+  <div class="card">
+    <div class="card-title" data-i18n="p3_t2">Renk → Ebced Değeri</div>
+    <div class="grid-2">
+      <div>
+        <label class="lbl" data-i18n="p3_color_mode">Format</label>
+        <select class="sel" id="p3ColorMode" onchange="p3ToggleColorInput()">
+          <option value="hex">HEX</option>
+          <option value="rgb">RGB</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:0.5rem;">
+        <input type="color" id="p3ColorPicker" value="#10b974" oninput="p3SyncFromPicker()" title="Color Picker"/>
+        <input type="text" id="p3HexInput" placeholder="#10b974" oninput="p3ColorToEbced()" style="flex:1;"/>
+      </div>
+    </div>
+    <div id="p3RgbRow" style="display:none;margin-top:0.75rem;">
+      <div class="grid-2">
+        <div><label class="lbl">R (0-255)</label><input type="number" id="p3R" min="0" max="255" placeholder="16" oninput="p3ColorToEbced()"/></div>
+        <div><label class="lbl">G (0-255)</label><input type="number" id="p3G" min="0" max="255" placeholder="185" oninput="p3ColorToEbced()"/></div>
+      </div>
+      <div style="margin-top:0.75rem;"><label class="lbl">B (0-255)</label><input type="number" id="p3B" min="0" max="255" placeholder="116" oninput="p3ColorToEbced()"/></div>
+    </div>
+    <div id="p3ColorResult" style="display:none;margin-top:0.75rem;">
+      <div class="color-preview" id="p3ColorPreview2"></div>
+      <div style="margin-top:0.75rem;display:flex;gap:1.5rem;flex-wrap:wrap;">
+        <div><div class="result-label" data-i18n="ebced_val">Ebced</div><div style="font-size:1.8rem;color:var(--emerald);" id="p3EbcedFromColor">0</div></div>
+        <div><div class="result-label">R / G / B</div><div style="font-size:1rem;color:var(--text-mid);" id="p3RgbBreakdown">—</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 4: Ebced → Hertz → Ses
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p4">
+  <div class="card">
+    <div class="card-title" data-i18n="p4_title">Ebced → Hertz → Ses</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p4_input">Metin veya Ebced Sayısı</label>
+      <input type="text" id="p4Input" placeholder="بسم الله / 786" oninput="p4Update()"/>
+    </div>
+    <div id="p4Info" style="display:none;margin-top:0.5rem;">
+      <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <div><div class="result-label" data-i18n="ebced_val">Ebced</div><div style="font-size:1.4rem;color:var(--emerald);" id="p4EbcedVal">—</div></div>
+        <div><div class="result-label">Frekans</div><div style="font-size:1.4rem;color:var(--emerald);" id="p4FreqVal">— Hz</div></div>
+      </div>
+      <div class="audio-viz" id="p4Viz">
+        <span style="font-size:0.65rem;letter-spacing:0.1em;color:var(--text-dim);" data-i18n="p4_ready">Oynatmaya hazır</span>
+      </div>
+      <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+        <button class="btn btn-full" id="p4PlayBtn" onclick="p4Play()" data-i18n="p4_play">▶ Oynat</button>
+        <button class="btn btn-sm btn-danger" id="p4StopBtn" onclick="p4Stop()" style="display:none;" data-i18n="p4_stop">■ Durdur</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" data-i18n="p4_info_title">Frekans Haritası</div>
+    <p style="font-size:0.75rem;color:var(--text-mid);line-height:1.8;">
+      <span data-i18n="p4_map_desc">Ebced değeri 1-2000 aralığına normalize edilir ve 1000 Hz - 8000 Hz arasına eşlenir. Saf sinüs dalgası üretilir.</span>
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 5: Ebced → Enlem/Boylam
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p5">
+  <div class="card">
+    <div class="card-title" data-i18n="p5_title">Ebced → Enlem / Boylam</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p5_input">Metin veya Ebced Sayısı</label>
+      <input type="text" id="p5Input" placeholder="الله / 66" oninput="p5Calculate()"/>
+    </div>
+    <div id="p5Result" style="display:none;">
+      <div class="result-box">
+        <div class="grid-2" style="gap:1.5rem;margin-bottom:1rem;">
+          <div>
+            <div class="result-label" data-i18n="p5_lat">Enlem (Lat)</div>
+            <div style="font-size:1.6rem;color:var(--emerald);" id="p5Lat">—</div>
+          </div>
+          <div>
+            <div class="result-label" data-i18n="p5_lon">Boylam (Lon)</div>
+            <div style="font-size:1.6rem;color:var(--emerald);" id="p5Lon">—</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
+          <div><div class="result-label" data-i18n="p5_ebced">Ebced</div><div style="font-size:1rem;color:var(--text-mid);" id="p5Ebced">—</div></div>
+          <div><div class="result-label" data-i18n="p5_band">Enlem Bandı</div><div style="font-size:1rem;color:var(--text-mid);" id="p5Band">—</div></div>
+          <div><div class="result-label" data-i18n="p5_hemi">Yarımküre</div><div style="font-size:1rem;color:var(--text-mid);" id="p5Hemi">—</div></div>
+        </div>
+        <a class="map-link" id="p5MapLink" href="#" target="_blank">
+          <span>↗</span> <span data-i18n="p5_open_maps">Google Maps'te Aç</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 6: Karakter Çevirisi
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p6">
+  <div class="card">
+    <div class="card-title" data-i18n="p6_title">Karakter Çevirisi</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p6_input">Latin Metin</label>
+      <input type="text" id="p6Input" placeholder="bismillah" oninput="p6Convert()"/>
+    </div>
+    <div id="p6Result" style="display:none;">
+      <div class="script-output" id="p6Output"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" data-i18n="p6_note_title">Not</div>
+    <p style="font-size:0.75rem;color:var(--text-mid);line-height:1.8;" data-i18n="p6_note">Fonetik karakter eşleştirmesi yapılır. Anlam çevirisi değildir. Hiyeroglif semboller yaklaşık fonetik temsilidir.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 7: Harf → Element
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p7">
+  <div class="card">
+    <div class="card-title" data-i18n="p7_title">Harf → Element</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p7_input">Arapça veya Latin Harf/Kelime</label>
+      <input type="text" id="p7Input" placeholder="AB veya ابج" oninput="p7Convert()"/>
+    </div>
+    <div id="p7Result" style="display:none;">
+      <div class="element-row" id="p7Elements"></div>
+      <div class="divider"></div>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.5rem;" id="p7Summary"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" data-i18n="p7_table_title">Klasik Element Tablosu</div>
+    <div id="p7Table" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 8: Hakkında
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p8">
+  <div class="about-section">
+    <span class="about-logo-ar">طب</span>
+    <div class="about-title">TASAVVUF TOOLBOX</div>
+    <div class="about-sub" data-i18n="about_sub">Esoterik Hesap Araçları Koleksiyonu</div>
+  </div>
+  <div class="about-card">
+    <h3 data-i18n="about_dev_title">Geliştirici</h3>
+    <p>
+      <strong style="color:var(--text-bright);">BirAcizKul</strong>
+      <span style="color:var(--text-dim);"> · Kadir Çakmak</span><br/>
+      <span data-i18n="about_dev_desc">Bu araç, tasavvuf ve İslam ezoterizmindeki sayısal sistemleri modern web teknolojisiyle buluşturmak amacıyla geliştirilmiştir.</span>
+    </p>
+  </div>
+  <div class="about-card">
+    <h3 data-i18n="about_ai_title">Yapay Zeka Desteği</h3>
+    <p>
+      <strong style="color:var(--text-bright);">Claude</strong>
+      <span style="color:var(--text-dim);"> by Anthropic</span><br/>
+      <span data-i18n="about_ai_desc">Bu toolbox, Anthropic'in Claude yapay zeka modeli ile birlikte tasarlanmış ve kodlanmıştır.</span><br/><br/>
+      <strong style="color:var(--text-bright);">ChatGPT</strong>
+      <span style="color:var(--text-dim);"> by OpenAI</span><br/>
+      <span data-i18n="about_chatgpt_desc">Algoritma geliştirme ve modül tasarımında destek sağlamıştır.</span><br/><br/>
+      <a href="https://www.anthropic.com" target="_blank">anthropic.com</a> · <a href="https://claude.ai" target="_blank">claude.ai</a>
+    </p>
+  </div>
+  <div class="about-card">
+    <h3 data-i18n="about_modules_title">Modüller</h3>
+    <p style="line-height:2.2;">
+      <span class="badge">01</span> <span data-i18n="nav1">Ebced Hesap</span><br/>
+      <span class="badge">02</span> <span data-i18n="nav2">Ebced → Harf</span><br/>
+      <span class="badge">03</span> <span data-i18n="nav3">Renk ↔ Ebced</span><br/>
+      <span class="badge">04</span> <span data-i18n="nav4">Ebced → Ses</span><br/>
+      <span class="badge">05</span> <span data-i18n="nav5">Ebced → Konum</span><br/>
+      <span class="badge">06</span> <span data-i18n="nav6">Karakter Çeviri</span><br/>
+      <span class="badge">07</span> <span data-i18n="nav7">Harf → Element</span><br/>
+      <span class="badge">09</span> <span data-i18n="nav9">Esma Bulucu</span><br/>
+      <span class="badge">10</span> <span data-i18n="nav10">Vefk</span>
+    </p>
+  </div>
+  <div class="about-card">
+    <h3 data-i18n="about_disclaimer_title">Sorumluluk Reddi</h3>
+    <p data-i18n="about_disclaimer">Bu araç yalnızca araştırma, eğitim ve kültürel amaçlar için tasarlanmıştır. Hesaplama sonuçları referans niteliğindedir.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 9: Esma Bulucu
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p9">
+  <div class="card">
+    <div class="card-title" data-i18n="p9_title">Esma Bulucu</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p9_input">Isim veya Metin Gir</label>
+      <input type="text" id="p9Input" placeholder="Muhammed / محمد" oninput="p9Search()"/>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-bottom:1rem;">
+      <button class="btn btn-full" id="p9BtnExact" onclick="p9SetMode('exact')" data-i18n="p9_exact">Birebir Arama</button>
+      <button class="btn btn-full" id="p9BtnDeep" onclick="p9SetMode('deep')" data-i18n="p9_deep">Derin Arama (+-10)</button>
+    </div>
+    <div id="p9EbcedInfo" style="display:none;margin-bottom:0.75rem;">
+      <span style="font-size:0.7rem;color:var(--text-dim);" data-i18n="p9_ebced_val">Hesaplanan Ebced:</span>
+      <span style="color:var(--emerald);font-size:1rem;margin-left:0.5rem;" id="p9EbcedShow"></span>
+    </div>
+    <div id="p9Msg"></div>
+  </div>
+  <div id="p9Results" style="display:none;">
+    <div class="card">
+      <div class="card-title" id="p9ResultTitle">Bulunan Esmalar</div>
+      <div id="p9List" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PANEL 10: Vefk
+═══════════════════════════════════════════════ -->
+<div class="panel" id="p10">
+  <div class="card">
+    <div class="card-title" data-i18n="p10_title">4x4 Vefk</div>
+    <div class="row">
+      <label class="lbl" data-i18n="p10_select">Esma Sec</label>
+      <select class="sel" id="p10Select" onchange="p10Generate()">
+        <option value="">— Esma Seciniz —</option>
+      </select>
+    </div>
+    <div id="p10InfoRow" style="display:none;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+      <div><div class="result-label">Arapca</div><div style="font-family:var(--arabic);font-size:1.8rem;color:var(--emerald);direction:rtl;" id="p10Ar"></div></div>
+      <div><div class="result-label" data-i18n="ebced_val">Ebced</div><div style="font-size:1.4rem;color:var(--emerald);" id="p10Ebced"></div></div>
+    </div>
+  </div>
+  <div class="card" id="p10VefkCard" style="display:none;">
+    <div class="card-title" data-i18n="p10_vefk_title">Vefk Karesi</div>
+    <div class="vefk-wrap">
+      <div class="vefk-grid" id="p10Grid"></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- NEY BUTTON -->
+<button class="ney-btn" id="neyBtn" title="Ney Sesi">🎵</button>
+
+<footer>
+  <span data-i18n="footer">Tasavvuf Toolbox · Kadir Çakmak · Claude by Anthropic</span>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// I18N
+// ═══════════════════════════════════════════
+const LANGS = {
+  tr: {
+    subtitle:'Toolbox · Esoterik Hesap Araçları',
+    nav1:'Ebced Hesap',nav2:'Ebced → Harf',nav3:'Renk ↔ Ebced',nav4:'Ebced → Ses',
+    nav5:'Ebced → Konum',nav6:'Karakter Çeviri',nav7:'Harf → Element',nav8:'Hakkında',
+    p1_title:'Klasik Ebced Hesabı',p1_input_label:'Metin Gir (Arapça veya Latin)',
+    p1_keyboard_label:'Arapça Klavye',calc_btn:'Hesapla',p1_result_title:'Sonuç',
+    total_value:'Toplam Değer',breakdown:'Harf Dökümü',ebced_table:'Ebced Tablosu',
+    p2_title:'Ebced → Arapça Harf Kombinasyonları',p2_input_label:'Ebced Değeri Gir',
+    p2_sort:'Sıralama',sort_default:'Varsayılan',sort_fewest:'Az Harf',sort_highest:'Yüksek Değer',sort_lowest:'Düşük Değer',
+    p2_pagesize:'Sayfa Boyutu',p2_repeat:'Tekrar İzni',p2_exhausted:'Tüm kombinasyonlar gösterildi.',
+    p2_more:'Daha Fazla',
+    p3_t1:'Metin → Ebced → Renk',p3_t2:'Renk → Ebced Değeri',
+    p3_text_input:'Arapça / Latin Metin',p3_color_mode:'Format',
+    ebced_val:'Ebced',
+    p4_title:'Ebced → Hertz → Ses',p4_input:'Metin veya Ebced Sayısı',
+    p4_ready:'Oynatmaya hazır',p4_play:'▶ Oynat',p4_stop:'■ Durdur',
+    p4_info_title:'Frekans Haritası',
+    p4_map_desc:'Ebced değeri 1-2000 aralığına normalize edilir ve 1000 Hz - 8000 Hz arasına eşlenir. Saf sinüs dalgası üretilir.',
+    p5_title:'Ebced → Enlem / Boylam',p5_input:'Metin veya Ebced Sayısı',
+    p5_lat:'Enlem (Lat)',p5_lon:'Boylam (Lon)',p5_ebced:'Ebced',
+    p5_band:'Enlem Bandı',p5_hemi:'Yarımküre',p5_open_maps:"Google Maps'te Aç",
+    p6_title:'Karakter Çevirisi',p6_input:'Latin Metin',p6_note_title:'Not',
+    p6_note:'Fonetik karakter eşleştirmesi yapılır. Anlam çevirisi değildir. Hiyeroglif semboller yaklaşık fonetik temsilidir.',
+    p7_title:'Harf → Element',p7_input:'Arapça veya Latin Harf/Kelime',
+    p7_table_title:'Klasik Element Tablosu',
+    about_sub:'Esoterik Hesap Araçları Koleksiyonu',
+    about_dev_title:'Geliştirici',about_dev_desc:'Bu araç, tasavvuf ve İslam ezoterizmindeki sayısal sistemleri modern web teknolojisiyle buluşturmak amacıyla geliştirilmiştir.',
+    about_ai_title:'Yapay Zeka Desteği',about_ai_desc:'Bu toolbox, Anthropic\'in Claude yapay zeka modeli ile birlikte tasarlanmış ve kodlanmıştır.',
+    about_modules_title:'Modüller',about_disclaimer_title:'Sorumluluk Reddi',
+    about_disclaimer:'Bu araç yalnızca araştırma, eğitim ve kültürel amaçlar için tasarlanmıştır. Hesaplama sonuçları referans niteliğindedir.',
+    footer:'Tasavvuf Toolbox · BirAcizKul (Kadir Çakmak) · Claude by Anthropic',
+    fire:'Ateş',air:'Hava',water:'Su',earth:'Toprak',unknown:'Bilinmiyor',
+    nav9:'Esma Bulucu',nav10:'Vefk',
+    p9_title:'Esma Bulucu',p9_input:'İsim veya Metin Gir',p9_exact:'Birebir Arama',p9_deep:'Derin Arama (±10)',
+    p9_ebced_val:'Hesaplanan Ebced:',p9_results:'Bulunan Esmalar',p9_none:'Eşleşen esma bulunamadı.',
+    p9_meaning_tr:'Anlam (TR)',p9_meaning_en:'Anlam (EN)',p9_meaning_id:'Anlam (ID)',
+    p10_title:'4×4 Vefk',p10_select:'Esma Seç',p10_vefk_title:'Vefk Karesi',
+    about_chatgpt_desc:'Algoritma geliştirme ve modül tasarımında destek sağlamıştır.'
+  },
+  en: {
+    subtitle:'Toolbox · Esoteric Calculation Tools',
+    nav1:'Ebced Calc',nav2:'Ebced → Letters',nav3:'Color ↔ Ebced',nav4:'Ebced → Sound',
+    nav5:'Ebced → Location',nav6:'Script Convert',nav7:'Letter → Element',nav8:'About',
+    p1_title:'Classical Ebced Calculator',p1_input_label:'Enter Text (Arabic or Latin)',
+    p1_keyboard_label:'Arabic Keyboard',calc_btn:'Calculate',p1_result_title:'Result',
+    total_value:'Total Value',breakdown:'Letter Breakdown',ebced_table:'Ebced Table',
+    p2_title:'Ebced → Arabic Letter Combinations',p2_input_label:'Enter Ebced Value',
+    p2_sort:'Sort',sort_default:'Default',sort_fewest:'Fewest Letters',sort_highest:'Highest Value',sort_lowest:'Lowest Value',
+    p2_pagesize:'Page Size',p2_repeat:'Allow Repeat',p2_exhausted:'All combinations shown.',
+    p2_more:'Load More',
+    p3_t1:'Text → Ebced → Color',p3_t2:'Color → Ebced Value',
+    p3_text_input:'Arabic / Latin Text',p3_color_mode:'Format',
+    ebced_val:'Ebced',
+    p4_title:'Ebced → Hertz → Sound',p4_input:'Text or Ebced Number',
+    p4_ready:'Ready to play',p4_play:'▶ Play',p4_stop:'■ Stop',
+    p4_info_title:'Frequency Map',
+    p4_map_desc:'Ebced value is normalized to 1-2000 range and mapped to 1000 Hz - 8000 Hz. Pure sine wave is generated.',
+    p5_title:'Ebced → Latitude / Longitude',p5_input:'Text or Ebced Number',
+    p5_lat:'Latitude',p5_lon:'Longitude',p5_ebced:'Ebced',
+    p5_band:'Latitude Band',p5_hemi:'Hemisphere',p5_open_maps:'Open in Google Maps',
+    p6_title:'Script Converter',p6_input:'Latin Text',p6_note_title:'Note',
+    p6_note:'Phonetic character mapping only. Not a translation. Hieroglyphs are approximate phonetic representations.',
+    p7_title:'Letter → Element',p7_input:'Arabic or Latin Letter/Word',
+    p7_table_title:'Classical Element Table',
+    about_sub:'Esoteric Calculation Tools Collection',
+    about_dev_title:'Developer',about_dev_desc:'This tool was developed to bridge numerical systems in Sufism and Islamic esotericism with modern web technology.',
+    about_ai_title:'AI Assistance',about_ai_desc:'This toolbox was designed and coded together with Anthropic\'s Claude AI model.',
+    about_modules_title:'Modules',about_disclaimer_title:'Disclaimer',
+    about_disclaimer:'This tool is designed for research, educational and cultural purposes only. Calculation results are for reference.',
+    footer:'Tasavvuf Toolbox · BirAcizKul (Kadir Çakmak) · Claude by Anthropic',
+    fire:'Fire',air:'Air',water:'Water',earth:'Earth',unknown:'Unknown',
+    nav9:'Esma Finder',nav10:'Wafq',
+    p9_title:'Esma Finder',p9_input:'Enter Name or Text',p9_exact:'Exact Match',p9_deep:'Deep Search (±10)',
+    p9_ebced_val:'Calculated Ebced:',p9_results:'Found Esmas',p9_none:'No matching esma found.',
+    p9_meaning_tr:'Meaning (TR)',p9_meaning_en:'Meaning (EN)',p9_meaning_id:'Meaning (ID)',
+    p10_title:'4×4 Wafq',p10_select:'Select Esma',p10_vefk_title:'Wafq Square',
+    about_chatgpt_desc:'Provided support in algorithm development and module design.'
+  },
+  id: {
+    subtitle:'Toolbox · Alat Perhitungan Esoterik',
+    nav1:'Hitung Ebced',nav2:'Ebced → Huruf',nav3:'Warna ↔ Ebced',nav4:'Ebced → Suara',
+    nav5:'Ebced → Lokasi',nav6:'Konversi Skrip',nav7:'Huruf → Elemen',nav8:'Tentang',
+    p1_title:'Kalkulator Ebced Klasik',p1_input_label:'Masukkan Teks (Arab atau Latin)',
+    p1_keyboard_label:'Keyboard Arab',calc_btn:'Hitung',p1_result_title:'Hasil',
+    total_value:'Nilai Total',breakdown:'Rincian Huruf',ebced_table:'Tabel Ebced',
+    p2_title:'Ebced → Kombinasi Huruf Arab',p2_input_label:'Masukkan Nilai Ebced',
+    p2_sort:'Urutkan',sort_default:'Default',sort_fewest:'Huruf Sedikit',sort_highest:'Nilai Tinggi',sort_lowest:'Nilai Rendah',
+    p2_pagesize:'Ukuran Halaman',p2_repeat:'Izinkan Pengulangan',p2_exhausted:'Semua kombinasi telah ditampilkan.',
+    p2_more:'Muat Lebih',
+    p3_t1:'Teks → Ebced → Warna',p3_t2:'Warna → Nilai Ebced',
+    p3_text_input:'Teks Arab / Latin',p3_color_mode:'Format',
+    ebced_val:'Ebced',
+    p4_title:'Ebced → Hertz → Suara',p4_input:'Teks atau Angka Ebced',
+    p4_ready:'Siap diputar',p4_play:'▶ Putar',p4_stop:'■ Berhenti',
+    p4_info_title:'Peta Frekuensi',
+    p4_map_desc:'Nilai Ebced dinormalisasi ke rentang 1-2000 dan dipetakan ke 1000 Hz - 8000 Hz. Gelombang sinus murni dihasilkan.',
+    p5_title:'Ebced → Lintang / Bujur',p5_input:'Teks atau Angka Ebced',
+    p5_lat:'Lintang',p5_lon:'Bujur',p5_ebced:'Ebced',
+    p5_band:'Zona Lintang',p5_hemi:'Belahan',p5_open_maps:'Buka di Google Maps',
+    p6_title:'Konverter Skrip',p6_input:'Teks Latin',p6_note_title:'Catatan',
+    p6_note:'Pemetaan karakter fonetik saja. Bukan terjemahan makna. Hieroglif adalah representasi fonetik perkiraan.',
+    p7_title:'Huruf → Elemen',p7_input:'Huruf/Kata Arab atau Latin',
+    p7_table_title:'Tabel Elemen Klasik',
+    about_sub:'Koleksi Alat Perhitungan Esoterik',
+    about_dev_title:'Pengembang',about_dev_desc:'Alat ini dikembangkan untuk mempertemukan sistem numerik dalam tasawuf dan esoterisme Islam dengan teknologi web modern.',
+    about_ai_title:'Bantuan AI',about_ai_desc:'Toolbox ini dirancang dan dikodekan bersama model AI Claude dari Anthropic.',
+    about_modules_title:'Modul',about_disclaimer_title:'Penyangkalan',
+    about_disclaimer:'Alat ini dirancang hanya untuk tujuan penelitian, pendidikan dan budaya. Hasil perhitungan bersifat referensi.',
+    footer:'Tasavvuf Toolbox · BirAcizKul (Kadir Çakmak) · Claude by Anthropic',
+    fire:'Api',air:'Udara',water:'Air',earth:'Tanah',unknown:'Tidak Diketahui',
+    nav9:'Pencari Asma',nav10:'Wafq',
+    p9_title:'Pencari Asma',p9_input:'Masukkan Nama atau Teks',p9_exact:'Pencarian Tepat',p9_deep:'Pencarian Mendalam (±10)',
+    p9_ebced_val:'Ebced Terhitung:',p9_results:'Asma Ditemukan',p9_none:'Tidak ada asma yang cocok.',
+    p9_meaning_tr:'Arti (TR)',p9_meaning_en:'Arti (EN)',p9_meaning_id:'Arti (ID)',
+    p10_title:'Wafq 4×4',p10_select:'Pilih Asma',p10_vefk_title:'Kotak Wafq',
+    about_chatgpt_desc:'Memberikan dukungan dalam pengembangan algoritma dan desain modul.'
+  }
+};
+
+let currentLang = 'tr';
+function setLang(lang) {
+  currentLang = lang;
+  const d = LANGS[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (d[k]) el.textContent = d[k];
+  });
+  // re-render element table
+  renderElementTable();
+  // rebuild vefk dropdown
+  p10BuildSelect();
+  // refresh esma results if any
+  if (document.getElementById('p9Input') && document.getElementById('p9Input').value) p9Search();
+}
+function t(key) { return LANGS[currentLang][key] || key; }
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// EBCED DATA
+// ═══════════════════════════════════════════
+const EBCED = [
+  {ar:'أ',name:'Alif', val:1},  {ar:'ب',name:'Ba',   val:2},
+  {ar:'ج',name:'Jim',  val:3},  {ar:'د',name:'Dal',  val:4},
+  {ar:'ه',name:'Ha',   val:5},  {ar:'و',name:'Waw',  val:6},
+  {ar:'ز',name:'Zay',  val:7},  {ar:'ح',name:'Ha2',  val:8},
+  {ar:'ط',name:'Ta',   val:9},  {ar:'ي',name:'Ya',   val:10},
+  {ar:'ك',name:'Kaf',  val:20}, {ar:'ل',name:'Lam',  val:30},
+  {ar:'م',name:'Mim',  val:40}, {ar:'ن',name:'Nun',  val:50},
+  {ar:'س',name:'Sin',  val:60}, {ar:'ع',name:'Ayn',  val:70},
+  {ar:'ف',name:'Fa',   val:80}, {ar:'ص',name:'Sad',  val:90},
+  {ar:'ق',name:'Qaf',  val:100},{ar:'ر',name:'Ra',   val:200},
+  {ar:'ش',name:'Shin', val:300},{ar:'ت',name:'Ta2',  val:400},
+  {ar:'ث',name:'Tha',  val:500},{ar:'خ',name:'Kha',  val:600},
+  {ar:'ذ',name:'Dhal', val:700},{ar:'ض',name:'Dad',  val:800},
+  {ar:'ظ',name:'Dha',  val:900},{ar:'غ',name:'Ghayn',val:1000}
+];
+
+const EBCED_MAP = {};
+EBCED.forEach(e => { EBCED_MAP[e.ar] = e.val; });
+// extras
+['ا','إ','آ'].forEach(c => EBCED_MAP[c]=1);
+EBCED_MAP['ة']=5; EBCED_MAP['ى']=10; EBCED_MAP['ئ']=10; EBCED_MAP['ك']=20; EBCED_MAP['ک']=20;
+
+// Latin → Arabic transliteration map (longest match first)
+const LATIN_TO_AR = [
+  ['gh','غ'],['kh','خ'],['sh','ش'],['th','ث'],['dh','ذ'],['dz','ض'],
+  ['aa','ا'],['ee','ي'],['oo','و'],
+  ['a','ا'],['b','ب'],['j','ج'],['d','د'],['h','ه'],['w','و'],['z','ز'],
+  ['H','ح'],['T','ط'],['y','ي'],['Y','ي'],['k','ك'],['l','ل'],['m','م'],
+  ['n','ن'],['s','س'],['S','ص'],['f','ف'],['q','ق'],['r','ر'],
+  ['t','ت'],['e','ا'],['i','ي'],['o','و'],['u','و'],['g','غ'],
+  ['c','ك'],['p','ف'],['v','و'],['x','خ'],['A','ا'],['B','ب'],
+  ['D','د'],['F','ف'],['G','غ'],['J','ج'],['K','ك'],['L','ل'],
+  ['M','م'],['N','ن'],['Q','ق'],['R','ر'],['W','و'],['Z','ز'],
+  ['C','ك'],['I','ي'],['O','و'],['U','و'],['E','ا'],['P','ف'],['V','و'],['X','خ']
+];
+
+function latinToArabic(str) {
+  let result = '';
+  let i = 0;
+  while (i < str.length) {
+    let matched = false;
+    for (const [lat, ar] of LATIN_TO_AR) {
+      if (str.substr(i, lat.length) === lat) {
+        result += ar;
+        i += lat.length;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) i++;
+  }
+  return result;
+}
+
+function isArabic(str) { return /[\u0600-\u06FF]/.test(str); }
+
+function computeEbced(text) {
+  let arText = isArabic(text) ? text : latinToArabic(text);
+  let total = 0;
+  const letters = [];
+  for (const ch of arText) {
+    if (EBCED_MAP[ch]) {
+      total += EBCED_MAP[ch];
+      const entry = EBCED.find(e => e.ar === ch || (ch==='ا'&&e.val===1));
+      letters.push({ ar: ch, val: EBCED_MAP[ch], lat: ch });
+    }
+  }
+  return { total, letters, arText };
+}
+
+// ═══════════════════════════════════════════
+// PANEL 1: Ebced Hesap
+// ═══════════════════════════════════════════
+function buildArKeyboard() {
+  const kb = document.getElementById('arKeyboard');
+  kb.innerHTML = '';
+  EBCED.forEach(e => {
+    const btn = document.createElement('button');
+    btn.className = 'ar-key';
+    btn.innerHTML = `${e.ar}<span class="key-val">${e.val}</span>`;
+    btn.onclick = () => {
+      const inp = document.getElementById('p1Input');
+      inp.value += e.ar;
+      p1LiveUpdate();
+    };
+    kb.appendChild(btn);
+  });
+  const del = document.createElement('button');
+  del.className = 'ar-key ar-key-del';
+  del.textContent = '⌫';
+  del.onclick = () => {
+    const inp = document.getElementById('p1Input');
+    inp.value = [...inp.value].slice(0,-1).join('');
+    p1LiveUpdate();
+  };
+  kb.appendChild(del);
+  const sp = document.createElement('button');
+  sp.className = 'ar-key ar-key-space';
+  sp.textContent = 'SPACE';
+  sp.onclick = () => {
+    document.getElementById('p1Input').value += ' ';
+  };
+  kb.appendChild(sp);
+}
+
+function buildEbcedTable() {
+  const tbl = document.getElementById('p1Table');
+  tbl.innerHTML = '';
+  EBCED.forEach(e => {
+    const cell = document.createElement('div');
+    cell.className = 'ebced-cell';
+    cell.innerHTML = `<span class="ar">${e.ar}</span><span class="val">${e.val}</span><span class="name">${e.name}</span>`;
+    tbl.appendChild(cell);
+  });
+}
+
+function p1LiveUpdate() {
+  const val = document.getElementById('p1Input').value.trim();
+  if (!val) { document.getElementById('p1Result').style.display='none'; return; }
+  p1Calculate();
+}
+
+function p1Calculate() {
+  const raw = document.getElementById('p1Input').value.trim();
+  if (!raw) { showMsg('p1Msg','error', currentLang==='tr'?'Metin giriniz.':currentLang==='en'?'Please enter text.':'Masukkan teks.'); return; }
+  hideMsg('p1Msg');
+  const {total, letters, arText} = computeEbced(raw);
+  if (total === 0) { showMsg('p1Msg','error',currentLang==='tr'?'Hesaplanabilir harf bulunamadı.':currentLang==='en'?'No calculable letters found.':'Tidak ada huruf yang dapat dihitung.'); document.getElementById('p1Result').style.display='none'; return; }
+  document.getElementById('p1Total').textContent = total;
+  const bd = document.getElementById('p1Breakdown');
+  bd.innerHTML = '';
+  letters.forEach(l => {
+    const chip = document.createElement('div');
+    chip.className = 'letter-chip';
+    chip.innerHTML = `<span class="ar">${l.ar}</span><span class="val">${l.val}</span>`;
+    bd.appendChild(chip);
+  });
+  document.getElementById('p1Result').style.display = 'block';
+}
+
+function p1Clear() {
+  document.getElementById('p1Input').value='';
+  document.getElementById('p1Result').style.display='none';
+  hideMsg('p1Msg');
+}
+
+// ═══════════════════════════════════════════
+// PANEL 2: Ebced → Harf Kombinasyonları
+// ═══════════════════════════════════════════
+let p2Generator=null, p2Done=false, p2Shown=0, p2LastParams=null;
+
+function* p2CombinationGen(target, allowRepeat) {
+  const stack = [{indices:[],sum:0,nextStart:0}];
+  while (stack.length>0) {
+    const {indices,sum,nextStart} = stack.pop();
+    if (sum===target){yield p2Build(indices);continue;}
+    for (let i=nextStart;i<EBCED.length;i++) {
+      const ns = sum+EBCED[i].val;
+      if (ns>target) continue;
+      stack.push({indices:[...indices,i],sum:ns,nextStart:allowRepeat?i:i+1});
+    }
+  }
+}
+
+function p2Build(indices) {
+  const letters=indices.map(i=>EBCED[i]);
+  const arabic=[...letters].reverse().map(l=>l.ar).join('');
+  const formula=letters.map(l=>l.val).join(' + ');
+  const count=letters.length;
+  return {arabic,formula,count,isDirect:count===1,letters};
+}
+
+function p2Calculate() {
+  const raw=document.getElementById('p2Input').value;
+  const n=parseInt(raw);
+  if (!n||n<=0){showMsg('p2Msg','error',currentLang==='tr'?'Geçerli bir sayı giriniz.':currentLang==='en'?'Enter a valid number.':'Masukkan angka yang valid.');return;}
+  hideMsg('p2Msg');
+  const allowRepeat=document.getElementById('p2Repeat').checked;
+  const key=`${n}|${allowRepeat}`;
+  if (key!==p2LastParams){
+    p2LastParams=key;
+    p2Generator=p2CombinationGen(n,allowRepeat);
+    p2Done=false;p2Shown=0;
+    document.getElementById('p2List').innerHTML='';
+    document.getElementById('p2Exhausted').style.display='none';
+  }
+  document.getElementById('p2ResultSection').style.display='block';
+  document.getElementById('p2ResultTitle').textContent=`${currentLang==='tr'?'Kombinasyonlar':currentLang==='en'?'Combinations':'Kombinasi'} — ${n}`;
+  p2LoadBatch();
+}
+
+function p2LoadBatch() {
+  const ps=parseInt(document.getElementById('p2PageSize').value)||10;
+  const sort=document.getElementById('p2Sort').value;
+  const batch=[];
+  for(let i=0;i<ps;i++){const nx=p2Generator.next();if(nx.done){p2Done=true;break;}batch.push(nx.value);}
+  if(batch.length===0){p2ShowDone();return;}
+  let sorted=[...batch];
+  if(sort==='fewest')sorted.sort((a,b)=>a.count-b.count);
+  else if(sort==='highest')sorted.sort((a,b)=>Math.max(...b.letters.map(l=>l.val))-Math.max(...a.letters.map(l=>l.val)));
+  else if(sort==='lowest')sorted.sort((a,b)=>Math.min(...a.letters.map(l=>l.val))-Math.min(...b.letters.map(l=>l.val)));
+  sorted.sort((a,b)=>(b.isDirect?1:0)-(a.isDirect?1:0));
+  const list=document.getElementById('p2List');
+  sorted.forEach(r=>{
+    const item=document.createElement('div');
+    item.className='combo-item';
+    item.innerHTML=`<div class="combo-arabic">${r.arabic}</div><div><div class="combo-formula">${r.formula} = ${r.letters.reduce((s,l)=>s+l.val,0)}</div><div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem;">${r.count} ${currentLang==='tr'?'harf':currentLang==='en'?'letters':'huruf'}${r.isDirect?` <span class="badge">Direct</span>`:''}</div></div>`;
+    list.appendChild(item);
+  });
+  p2Shown+=sorted.length;
+  document.getElementById('p2Count').textContent=p2Shown;
+  document.getElementById('p2ContinueBtn').style.display=p2Done?'none':'flex';
+  if(p2Done)p2ShowDone();
+}
+
+function p2ShowDone(){
+  document.getElementById('p2ContinueBtn').style.display='none';
+  document.getElementById('p2Exhausted').style.display='block';
+}
+
+function p2Reset(){
+  p2Generator=null;p2Done=false;p2Shown=0;p2LastParams=null;
+  document.getElementById('p2List').innerHTML='';
+  document.getElementById('p2ResultSection').style.display='none';
+  document.getElementById('p2Input').value='';
+  hideMsg('p2Msg');
+}
+
+// ═══════════════════════════════════════════
+// PANEL 3: Renk ↔ Ebced
+// ═══════════════════════════════════════════
+function ebcedToColor(ebced) {
+  const R = ebced/2;
+  const G = R - ebced;
+  const B = Math.abs(Math.max(R,G)/Math.min(Math.abs(R)||1,Math.abs(G)||1));
+  let R1=Math.abs(Math.round(R%256));
+  let G1=Math.abs(Math.round((G/2)%256));
+  let B1=Math.abs(Math.round((B/3)%256));
+  if(R1<0)R1+=256; if(G1<0)G1+=256; if(B1<0)B1+=256;
+  R1=Math.min(255,R1); G1=Math.min(255,G1); B1=Math.min(255,B1);
+  return {r:R1,g:G1,b:B1};
+}
+
+function rgbToHex(r,g,b){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
+
+function p3TextToColor() {
+  const raw=document.getElementById('p3TextInput').value.trim();
+  const res=document.getElementById('p3TextResult');
+  if(!raw){res.style.display='none';return;}
+  const {total}=computeEbced(raw);
+  if(total===0){res.style.display='none';return;}
+  const {r,g,b}=ebcedToColor(total);
+  const hex=rgbToHex(r,g,b);
+  const prev=document.getElementById('p3ColorPreview');
+  prev.style.background=hex;
+  prev.style.color=total>500?'#000':'#fff';
+  prev.textContent=hex;
+  document.getElementById('p3EbcedVal').textContent=total;
+  document.getElementById('p3HexVal').textContent=hex;
+  document.getElementById('p3RgbVal').textContent=`rgb(${r},${g},${b})`;
+  res.style.display='block';
+}
+
+function p3ToggleColorInput(){
+  const mode=document.getElementById('p3ColorMode').value;
+  document.getElementById('p3RgbRow').style.display=mode==='rgb'?'block':'none';
+  document.getElementById('p3HexInput').style.display=mode==='hex'?'block':'none';
+}
+
+function p3SyncFromPicker(){
+  const hex=document.getElementById('p3ColorPicker').value;
+  document.getElementById('p3HexInput').value=hex;
+  p3ColorToEbced();
+}
+
+function p3ColorToEbced(){
+  const mode=document.getElementById('p3ColorMode').value;
+  let r,g,b;
+  if(mode==='hex'){
+    let hex=document.getElementById('p3HexInput').value.trim().replace('#','');
+    if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');
+    if(hex.length!==6)return;
+    r=parseInt(hex.substr(0,2),16);
+    g=parseInt(hex.substr(2,2),16);
+    b=parseInt(hex.substr(4,2),16);
+  } else {
+    r=parseInt(document.getElementById('p3R').value)||0;
+    g=parseInt(document.getElementById('p3G').value)||0;
+    b=parseInt(document.getElementById('p3B').value)||0;
+  }
+  if(isNaN(r)||isNaN(g)||isNaN(b))return;
+  const ebced=r+g+b;
+  const hex=rgbToHex(r,g,b);
+  const prev=document.getElementById('p3ColorPreview2');
+  prev.style.background=hex;
+  prev.textContent=hex;
+  prev.style.color=(r+g+b)>350?'#000':'#fff';
+  document.getElementById('p3EbcedFromColor').textContent=ebced;
+  document.getElementById('p3RgbBreakdown').textContent=`R:${r} + G:${g} + B:${b} = ${ebced}`;
+  document.getElementById('p3ColorResult').style.display='block';
+}
+
+// ═══════════════════════════════════════════
+// PANEL 4: Ebced → Ses
+// ═══════════════════════════════════════════
+let p4AudioCtx=null, p4OscNode=null, p4GainNode=null, p4Playing=false;
+let p4VizInterval=null;
+
+function mapToHz(ebced,min=1,max=2000,lo=1000,hi=8000){
+  const clamped=Math.max(min,Math.min(max,ebced));
+  const frac=(clamped-min)/(max-min);
+  return lo+frac*(hi-lo);
+}
+
+function p4Update(){
+  const raw=document.getElementById('p4Input').value.trim();
+  if(!raw){document.getElementById('p4Info').style.display='none';if(p4Playing)p4Stop();return;}
+  let ebced;
+  const num=parseInt(raw);
+  if(!isNaN(num)&&raw.match(/^\d+$/)){ebced=num;}
+  else{ebced=computeEbced(raw).total;}
+  if(!ebced||ebced===0){document.getElementById('p4Info').style.display='none';return;}
+  const freq=mapToHz(ebced);
+  document.getElementById('p4EbcedVal').textContent=ebced;
+  document.getElementById('p4FreqVal').textContent=freq.toFixed(1)+' Hz';
+  document.getElementById('p4Info').style.display='block';
+  if(p4Playing){p4OscNode.frequency.setTargetAtTime(freq,p4AudioCtx.currentTime,0.1);}
+}
+
+function p4Play(){
+  const raw=document.getElementById('p4Input').value.trim();
+  if(!raw)return;
+  let ebced;
+  const num=parseInt(raw);
+  if(!isNaN(num)&&raw.match(/^\d+$/)){ebced=num;}
+  else{ebced=computeEbced(raw).total;}
+  if(!ebced)return;
+  const freq=mapToHz(ebced);
+  if(!p4AudioCtx)p4AudioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  p4OscNode=p4AudioCtx.createOscillator();
+  p4GainNode=p4AudioCtx.createGain();
+  p4OscNode.type='sine';
+  p4OscNode.frequency.value=freq;
+  p4GainNode.gain.value=0.4;
+  p4OscNode.connect(p4GainNode);
+  p4GainNode.connect(p4AudioCtx.destination);
+  p4OscNode.start();
+  p4Playing=true;
+  document.getElementById('p4PlayBtn').style.display='none';
+  document.getElementById('p4StopBtn').style.display='flex';
+  buildViz();
+  p4VizInterval=setInterval(animateViz,80);
+}
+
+function p4Stop(){
+  if(p4OscNode){try{p4OscNode.stop();p4OscNode.disconnect();}catch(e){}}
+  p4Playing=false;
+  document.getElementById('p4PlayBtn').style.display='flex';
+  document.getElementById('p4StopBtn').style.display='none';
+  clearInterval(p4VizInterval);
+  resetViz();
+}
+
+function buildViz(){
+  const viz=document.getElementById('p4Viz');
+  viz.innerHTML='';
+  for(let i=0;i<32;i++){
+    const b=document.createElement('div');
+    b.className='viz-bar';
+    viz.appendChild(b);
+  }
+}
+function animateViz(){
+  document.querySelectorAll('.viz-bar').forEach(b=>{
+    b.style.height=Math.floor(8+Math.random()*44)+'px';
+  });
+}
+function resetViz(){
+  const viz=document.getElementById('p4Viz');
+  viz.innerHTML=`<span style="font-size:0.65rem;letter-spacing:0.1em;color:var(--text-dim);" data-i18n="p4_ready">${t('p4_ready')}</span>`;
+}
+
+// ═══════════════════════════════════════════
+// PANEL 5: Ebced → Enlem/Boylam
+// ═══════════════════════════════════════════
+function ebcedToLatLon(ebced){
+  const half=ebced/2;
+  let lat=(ebced-half)%180-90;
+  let lon=half%360-180;
+  while(lon<=-180)lon+=360;
+  while(lon>180)lon-=360;
+  return {lat,lon};
+}
+
+function latBand(lat){
+  if(lat>=66.5)return currentLang==='tr'?'Arktik':currentLang==='en'?'Arctic':'Arktik';
+  if(lat>=23.5)return currentLang==='tr'?'Ilıman/Kuzey':currentLang==='en'?'Temperate/North':'Sedang/Utara';
+  if(lat>=-23.5)return currentLang==='tr'?'Tropikal':currentLang==='en'?'Tropical':'Tropis';
+  if(lat>=-66.5)return currentLang==='tr'?'Ilıman/Güney':currentLang==='en'?'Temperate/South':'Sedang/Selatan';
+  return currentLang==='tr'?'Antarktika':currentLang==='en'?'Antarctic':'Antarktika';
+}
+
+function p5Calculate(){
+  const raw=document.getElementById('p5Input').value.trim();
+  if(!raw){document.getElementById('p5Result').style.display='none';return;}
+  let ebced;
+  const num=parseInt(raw);
+  if(!isNaN(num)&&raw.match(/^\d+$/))ebced=num;
+  else ebced=computeEbced(raw).total;
+  if(!ebced){document.getElementById('p5Result').style.display='none';return;}
+  const {lat,lon}=ebcedToLatLon(ebced);
+  document.getElementById('p5Lat').textContent=lat.toFixed(6)+'°';
+  document.getElementById('p5Lon').textContent=lon.toFixed(6)+'°';
+  document.getElementById('p5Ebced').textContent=ebced;
+  document.getElementById('p5Band').textContent=latBand(lat);
+  const hLat=lat>=0?(currentLang==='tr'?'Kuzey':currentLang==='en'?'Northern':'Utara'):(currentLang==='tr'?'Güney':currentLang==='en'?'Southern':'Selatan');
+  const hLon=lon>=0?(currentLang==='tr'?'Doğu':currentLang==='en'?'Eastern':'Timur'):(currentLang==='tr'?'Batı':currentLang==='en'?'Western':'Barat');
+  document.getElementById('p5Hemi').textContent=hLat+' / '+hLon;
+  const link=`https://maps.google.com/?q=${lat.toFixed(6)},${lon.toFixed(6)}`;
+  document.getElementById('p5MapLink').href=link;
+  document.getElementById('p5Result').style.display='block';
+}
+
+// ═══════════════════════════════════════════
+// PANEL 6: Karakter Çevirisi
+// ═══════════════════════════════════════════
+// Transliteration tables per script
+const SCRIPTS = {
+  arabic: {name:{tr:'Arapça',en:'Arabic',id:'Arab'}, dir:'rtl', map:{
+    a:'ا',b:'ب',j:'ج',d:'د',h:'ه',w:'و',z:'ز',H:'ح',T:'ط',y:'ي',
+    k:'ك',l:'ل',m:'م',n:'ن',s:'س',e:'ع',f:'ف',S:'ص',q:'ق',r:'ر',
+    sh:'ش',t:'ت',th:'ث',kh:'خ',dh:'ذ',D:'ض',Z:'ظ',gh:'غ',
+    i:'ي',u:'و',o:'و',c:'ك',p:'ف',v:'و',g:'غ',x:'خ'
+  }},
+  syriac: {name:{tr:'Süryanice',en:'Syriac',id:'Syriac'}, dir:'rtl', map:{
+    a:'ܐ',b:'ܒ',g:'ܓ',d:'ܕ',h:'ܗ',w:'ܘ',z:'ܙ',H:'ܚ',T:'ܛ',y:'ܝ',
+    k:'ܟ',l:'ܠ',m:'ܡ',n:'ܢ',s:'ܣ',e:'ܥ',f:'ܦ',S:'ܨ',q:'ܩ',r:'ܪ',
+    sh:'ܫ',t:'ܬ',i:'ܝ',u:'ܘ',o:'ܘ',c:'ܟ',p:'ܦ',v:'ܘ',x:'ܚ',j:'ܓ',
+    D:'ܕ',Z:'ܙ',gh:'ܓ',th:'ܬ',kh:'ܚ',dh:'ܕ',n2:'ܢ'
+  }},
+  ottoman: {name:{tr:'Osmanlıca',en:'Ottoman',id:'Ottoman'}, dir:'rtl', map:{
+    a:'ا',b:'ب',p:'پ',t:'ت',j:'ج',ch:'چ',H:'ح',kh:'خ',d:'د',r:'ر',
+    z:'ز',zh:'ژ',s:'س',sh:'ش',S:'ص',D:'ض',T:'ط',Z:'ظ',e:'ع',gh:'غ',
+    f:'ف',q:'ق',k:'ك',g:'گ',l:'ل',m:'م',n:'ن',w:'و',h:'ه',y:'ي',
+    i:'ي',u:'و',o:'و',c:'ك',v:'و',x:'خ'
+  }},
+  hieroglyph: {name:{tr:'Antik Mısır',en:'Hieroglyph',id:'Hieroglif'}, dir:'ltr', map:{
+    a:'𓄿',b:'𓃀',d:'𓂧',f:'𓆑',g:'𓎼',h:'𓉔',i:'𓇋',j:'𓆓',k:'𓎡',
+    l:'𓃭',m:'𓅓',n:'𓈖',o:'𓅱',p:'𓊪',q:'𓈎',r:'𓂋',s:'𓋴',t:'𓏏',
+    u:'𓅱',w:'𓅱',x:'𓎡',y:'𓇌',z:'𓊃',e:'𓄿',c:'𓎡',v:'𓆑',
+    sh:'𓈙',kh:'𓐍',th:'𓏏',gh:'𓎼',H:'𓇮',T:'𓏏',S:'𓋴',D:'𓂧',Z:'𓊃'
+  }},
+  hebrew: {name:{tr:'İbranice',en:'Hebrew',id:'Ibrani'}, dir:'rtl', map:{
+    a:'א',b:'ב',g:'ג',d:'ד',h:'ה',w:'ו',z:'ז',H:'ח',T:'ט',y:'י',
+    k:'כ',l:'ל',m:'מ',n:'נ',s:'ס',e:'ע',f:'פ',S:'צ',q:'ק',r:'ר',
+    sh:'ש',t:'ת',i:'י',u:'ו',o:'ו',c:'כ',p:'פ',v:'ו',x:'כ',j:'ג',
+    gh:'ג',kh:'כ',dh:'ד',th:'ת',D:'ד',Z:'ז'
+  }},
+  devanagari: {name:{tr:'Hintçe',en:'Hindi',id:'Hindi'}, dir:'ltr', map:{
+    a:'अ',b:'ब',c:'च',d:'द',e:'ए',f:'फ',g:'ग',h:'ह',i:'इ',j:'ज',
+    k:'क',l:'ल',m:'म',n:'न',o:'ओ',p:'प',q:'क',r:'र',s:'स',t:'त',
+    u:'उ',v:'व',w:'व',x:'क्ष',y:'य',z:'ज़',sh:'श',kh:'ख',gh:'घ',
+    th:'थ',dh:'ध',D:'ड',T:'ट',S:'ष',H:'ह',Z:'ज़',ch:'च'
+  }},
+  uyghur: {name:{tr:'Uygurca',en:'Uyghur',id:'Uygur'}, dir:'rtl', map:{
+    a:'ا',b:'ب',p:'پ',t:'ت',j:'ج',ch:'چ',x:'خ',d:'د',r:'ر',z:'ز',
+    zh:'ژ',s:'س',sh:'ش',gh:'غ',f:'ف',q:'ق',k:'ك',g:'گ',ng:'ڭ',
+    l:'ل',m:'م',n:'ن',h:'ھ',o:'ئو',u:'ئۇ',w:'ۋ',e:'ە',i:'ئى',y:'ي',
+    v:'ۋ',c:'چ',H:'ھ',T:'ت',S:'س',D:'د',Z:'ز'
+  }}
+};
+
+function p6Convert(){
+  const raw=document.getElementById('p6Input').value.trim();
+  const out=document.getElementById('p6Output');
+  const res=document.getElementById('p6Result');
+  if(!raw){res.style.display='none';return;}
+  out.innerHTML='';
+  Object.entries(SCRIPTS).forEach(([key,script])=>{
+    let result='';
+    let i=0;
+    const lower=raw.toLowerCase();
+    // try longest match
+    while(i<lower.length){
+      let matched=false;
+      const pairs=Object.entries(script.map).sort((a,b)=>b[0].length-a[0].length);
+      for(const [lat,sc] of pairs){
+        if(lower.substr(i,lat.length)===lat){
+          result+=sc;i+=lat.length;matched=true;break;
+        }
+      }
+      if(!matched){
+        if(lower[i]!==' ')result+='·';
+        i++;
+      }
+    }
+    const row=document.createElement('div');
+    row.className='script-row';
+    const langName=script.name[currentLang]||script.name.en;
+    row.innerHTML=`<div class="script-lang">${langName}</div><div class="script-text script-${key}" dir="${script.dir}">${result||'—'}</div>`;
+    out.appendChild(row);
+  });
+  res.style.display='block';
+}
+
+// ═══════════════════════════════════════════
+// PANEL 7: Harf → Element
+// ═══════════════════════════════════════════
+// Classical element assignments
+const ELEMENT_TABLE = {
+  // Fire — Ateş
+  'ا':  'fire', 'أ':'fire','إ':'fire','آ':'fire',
+  'ه':  'fire', 'ة':'fire',
+  'ط':  'fire',
+  'م':  'fire',
+  'ش':  'fire',
+  // Air — Hava
+  'ب':  'air',
+  'و':  'air',
+  'ك':  'air', 'ک':'air',
+  'ن':  'air',
+  'ص':  'air',
+  'ت':  'air',
+  'ث':  'air',
+  // Water — Su
+  'ج':  'water',
+  'ز':  'water',
+  'ل':  'water',
+  'س':  'water',
+  'ق':  'water',
+  'خ':  'water',
+  'ذ':  'water',
+  'ي':  'water', 'ى':'water','ئ':'water',
+  // Earth — Toprak
+  'د':  'earth',
+  'ح':  'earth',
+  'ع':  'earth',
+  'ف':  'earth',
+  'ر':  'earth',
+  'ض':  'earth',
+  'ظ':  'earth',
+  'غ':  'earth',
+};
+
+const ELEMENT_STYLE={fire:'el-fire',air:'el-air',water:'el-water',earth:'el-earth'};
+const ELEMENT_ICON={fire:'🔥',air:'💨',water:'💧',earth:'🌍'};
+
+function p7Convert(){
+  const raw=document.getElementById('p7Input').value.trim();
+  const res=document.getElementById('p7Result');
+  if(!raw){res.style.display='none';return;}
+  const arText=isArabic(raw)?raw:latinToArabic(raw);
+  const elRow=document.getElementById('p7Elements');
+  elRow.innerHTML='';
+  const counts={fire:0,air:0,water:0,earth:0};
+  let any=false;
+  for(const ch of arText){
+    if(!ELEMENT_TABLE[ch])continue;
+    any=true;
+    const el=ELEMENT_TABLE[ch];
+    counts[el]++;
+    const chip=document.createElement('div');
+    chip.className=`el-chip ${ELEMENT_STYLE[el]}`;
+    chip.innerHTML=`<span style="font-family:var(--arabic);font-size:1.2rem;">${ch}</span><span>${ELEMENT_ICON[el]} ${t(el)}</span>`;
+    elRow.appendChild(chip);
+  }
+  if(!any){res.style.display='none';return;}
+  const sum=document.getElementById('p7Summary');
+  sum.innerHTML='';
+  Object.entries(counts).forEach(([el,cnt])=>{
+    if(cnt===0)return;
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;';
+    d.innerHTML=`${ELEMENT_ICON[el]} <strong style="color:var(--text-bright);">${t(el)}</strong><span style="color:var(--text-dim);">×${cnt}</span>`;
+    sum.appendChild(d);
+  });
+  res.style.display='block';
+}
+
+function renderElementTable(){
+  const tbl=document.getElementById('p7Table');
+  if(!tbl)return;
+  tbl.innerHTML='';
+  const groups={
+    fire:['ا','ه','ط','م','ش'],
+    air: ['ب','و','ك','ن','ص','ت','ث'],
+    water:['ج','ز','ل','س','ق','خ','ذ','ي'],
+    earth:['د','ح','ع','ف','ر','ض','ظ','غ']
+  };
+  Object.entries(groups).forEach(([el,letters])=>{
+    const row=document.createElement('div');
+    row.className=`el-chip ${ELEMENT_STYLE[el]}`;
+    row.style.cssText='padding:0.6rem 0.9rem;width:100%;justify-content:flex-start;gap:0.6rem;';
+    row.innerHTML=`${ELEMENT_ICON[el]} <strong>${t(el)}</strong><span style="font-family:var(--arabic);font-size:1.2rem;direction:rtl;margin-left:auto;">${letters.join(' ')}</span>`;
+    tbl.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function showMsg(id,type,text){
+  const el=document.getElementById(id);
+  el.className=`msg msg-${type}`;
+  el.textContent=text;
+  el.style.display='block';
+}
+function hideMsg(id){
+  const el=document.getElementById(id);
+  if(el)el.style.display='none';
+}
+
+// ═══════════════════════════════════════════
+// PANEL 9: Esma Bulucu
+// ═══════════════════════════════════════════
+const ASMA = [
+  {ar:'الله',tr:'Allah',en:'Allah',id:'Allah',val:66},
+  {ar:'الرحمن',tr:'Rahman - Çok Merhametli',en:'The Most Merciful',id:'Yang Maha Pengasih',val:298},
+  {ar:'الرحيم',tr:'Rahim - Çok Acıyıcı',en:'The Most Compassionate',id:'Yang Maha Penyayang',val:258},
+  {ar:'الملك',tr:'Melik - Mülkün Sahibi',en:'The King',id:'Sang Raja',val:90},
+  {ar:'القدوس',tr:'Kuddüs - Her Türlü Eksikten Münezzeh',en:'The Most Holy',id:'Yang Maha Suci',val:170},
+  {ar:'السلام',tr:'Selam - Her Türlü Bela ve Afetten Selamet Veren',en:'The Source of Peace',id:'Sumber Kedamaian',val:131},
+  {ar:'المؤمن',tr:'Mü\'min - Güven Veren',en:'The Guardian of Faith',id:'Pemberi Keamanan',val:137},
+  {ar:'المهيمن',tr:'Müheymin - Her Şeyi Görüp Gözeten',en:'The Protector',id:'Yang Maha Memelihara',val:145},
+  {ar:'العزيز',tr:'Aziz - Güçlü ve Üstün',en:'The Almighty',id:'Yang Maha Perkasa',val:94},
+  {ar:'الجبار',tr:'Cebbar - İradesini Her Şeye Yürüten',en:'The Compeller',id:'Yang Maha Gagah',val:206},
+  {ar:'المتكبر',tr:'Mütekebbir - Büyüklüğü Her Şeyi Kuşatan',en:'The Supreme',id:'Yang Maha Megah',val:662},
+  {ar:'الخالق',tr:'Halık - Yaratan',en:'The Creator',id:'Sang Pencipta',val:731},
+  {ar:'البارئ',tr:'Bari - Her Şeyi Kusursuz Yaratan',en:'The Originator',id:'Yang Maha Mengadakan',val:214},
+  {ar:'المصور',tr:'Musavvir - Şekil Veren',en:'The Shaper',id:'Pemberi Bentuk',val:336},
+  {ar:'الغفار',tr:'Gaffar - Çok Bağışlayan',en:'The Forgiving',id:'Yang Maha Pengampun',val:1281},
+  {ar:'القهار',tr:'Kahhar - Her Şeye Galip Gelen',en:'The Subduer',id:'Yang Maha Memaksa',val:306},
+  {ar:'الوهاب',tr:'Vehhab - Karşılıksız Veren',en:'The Bestower',id:'Pemberi Karunia',val:14},
+  {ar:'الرزاق',tr:'Rezzak - Rızık Veren',en:'The Provider',id:'Pemberi Rezeki',val:308},
+  {ar:'الفتاح',tr:'Fettah - Her Şeyi Açan',en:'The Opener',id:'Pembuka Jalan',val:489},
+  {ar:'العليم',tr:'Alim - Her Şeyi Bilen',en:'The All-Knowing',id:'Yang Maha Mengetahui',val:150},
+  {ar:'القابض',tr:'Kabız - Dilediğini Tutan',en:'The Withholder',id:'Yang Maha Menyempitkan',val:903},
+  {ar:'الباسط',tr:'Basit - Dilediğine Bolluk Veren',en:'The Expander',id:'Yang Maha Melapangkan',val:72},
+  {ar:'الخافض',tr:'Hafid - Alçaltan',en:'The Abaser',id:'Yang Merendahkan',val:1481},
+  {ar:'الرافع',tr:'Rafi - Yükselten',en:'The Exalter',id:'Yang Meninggikan',val:351},
+  {ar:'المعز',tr:'Muizz - İzzet Veren',en:'The Bestower of Honor',id:'Yang Memuliakan',val:117},
+  {ar:'المذل',tr:'Müzil - Zillete Düşüren',en:'The Humiliator',id:'Yang Menghinakan',val:770},
+  {ar:'السميع',tr:'Semi - Her Şeyi İşiten',en:'The All-Hearing',id:'Yang Maha Mendengar',val:180},
+  {ar:'البصير',tr:'Basir - Her Şeyi Gören',en:'The All-Seeing',id:'Yang Maha Melihat',val:302},
+  {ar:'الحكم',tr:'Hakem - Hükmeden',en:'The Judge',id:'Yang Maha Memutuskan',val:68},
+  {ar:'العدل',tr:'Adl - Çok Adaletli',en:'The Just',id:'Yang Maha Adil',val:104},
+  {ar:'اللطيف',tr:'Latif - En İnce Sırları Bilen',en:'The Subtle',id:'Yang Maha Lembut',val:129},
+  {ar:'الخبير',tr:'Habir - Her Şeyden Haberdar',en:'The All-Aware',id:'Yang Maha Waspada',val:812},
+  {ar:'الحليم',tr:'Halim - Yumuşak Davranan',en:'The Forbearing',id:'Yang Maha Penyantun',val:88},
+  {ar:'العظيم',tr:'Azim - Büyüklükte Sınır Olmayan',en:'The Magnificent',id:'Yang Maha Agung',val:1020},
+  {ar:'الغفور',tr:'Gafur - Çok Bağışlayan',en:'The Forgiving',id:'Yang Maha Pengampun',val:1286},
+  {ar:'الشكور',tr:'Şekür - Az İbadete Çok Mükafat Veren',en:'The Grateful',id:'Yang Maha Mensyukuri',val:526},
+  {ar:'العلي',tr:'Ali - Yüce',en:'The Most High',id:'Yang Maha Tinggi',val:110},
+  {ar:'الكبير',tr:'Kebir - Her Şeyden Büyük',en:'The Most Great',id:'Yang Maha Besar',val:232},
+  {ar:'الحفيظ',tr:'Hafiz - Her Şeyi Koruyan',en:'The Preserver',id:'Yang Maha Memelihara',val:998},
+  {ar:'المقيت',tr:'Mukit - Her Şeye Gücü Yeten',en:'The Sustainer',id:'Pemberi Kecukupan',val:550},
+  {ar:'الحسيب',tr:'Hasib - Her Şeyin Hesabını Gören',en:'The Reckoner',id:'Yang Maha Membuat Perhitungan',val:80},
+  {ar:'الجليل',tr:'Celil - Sonsuz Büyüklük Sahibi',en:'The Majestic',id:'Yang Maha Luhur',val:73},
+  {ar:'الكريم',tr:'Kerim - Sonsuz Cömertlik Sahibi',en:'The Generous',id:'Yang Maha Mulia',val:270},
+  {ar:'الرقيب',tr:'Rakib - Her Şeyi Gözeten',en:'The Watchful',id:'Yang Maha Mengawasi',val:312},
+  {ar:'المجيب',tr:'Mücib - Dua ve İsteklere Cevap Veren',en:'The Responder',id:'Yang Maha Mengabulkan',val:55},
+  {ar:'الواسع',tr:'Vasi - Rahmeti Geniş',en:'The All-Encompassing',id:'Yang Maha Luas',val:137},
+  {ar:'الحكيم',tr:'Hakim - Her İşi Hikmetli',en:'The Wise',id:'Yang Maha Bijaksana',val:78},
+  {ar:'الودود',tr:'Vedud - Çok Seven',en:'The Loving',id:'Yang Maha Mencintai',val:20},
+  {ar:'المجيد',tr:'Mecid - Şan ve Şerefi Büyük',en:'The Most Glorious',id:'Yang Maha Mulia',val:57},
+  {ar:'الباعث',tr:'Bais - Ölüleri Dirilten',en:'The Resurrector',id:'Yang Membangkitkan',val:573},
+  {ar:'الشهيد',tr:'Şehid - Her Şeye Şahit Olan',en:'The Witness',id:'Yang Maha Menyaksikan',val:319},
+  {ar:'الحق',tr:'Hak - Gerçek Olan',en:'The Truth',id:'Yang Maha Benar',val:108},
+  {ar:'الوكيل',tr:'Vekil - Her Şeyin İdarecisi',en:'The Trustee',id:'Yang Maha Terpercaya',val:66},
+  {ar:'القوي',tr:'Kaviy - Çok Güçlü',en:'The All-Powerful',id:'Yang Maha Kuat',val:116},
+  {ar:'المتين',tr:'Metin - Çok Sağlam',en:'The Firm',id:'Yang Maha Kokoh',val:500},
+  {ar:'الولي',tr:'Veliy - Dost',en:'The Protecting Friend',id:'Pelindung',val:46},
+  {ar:'الحميد',tr:'Hamid - Her Türlü Övgüye Layık',en:'The Praiseworthy',id:'Yang Maha Terpuji',val:62},
+  {ar:'المحصي',tr:'Muhsi - Her Şeyi Sayan',en:'The All-Enumerating',id:'Yang Maha Menghitung',val:148},
+  {ar:'المبدئ',tr:'Mübdi - İlk Yaratan',en:'The Originator',id:'Yang Memulai',val:56},
+  {ar:'المعيد',tr:'Muid - Tekrar Yaratan',en:'The Restorer',id:'Yang Mengembalikan',val:124},
+  {ar:'المحيي',tr:'Muhyiy - Hayat Veren',en:'The Giver of Life',id:'Pemberi Kehidupan',val:68},
+  {ar:'المميت',tr:'Mümit - Öldüren',en:'The Taker of Life',id:'Pemberi Kematian',val:490},
+  {ar:'الحي',tr:'Hayy - Diri',en:'The Ever-Living',id:'Yang Maha Hidup',val:18},
+  {ar:'القيوم',tr:'Kayyum - Kendi Kendine Var Olan',en:'The Self-Subsisting',id:'Yang Berdiri Sendiri',val:156},
+  {ar:'الواجد',tr:'Vacid - İstediğini Bulan',en:'The Finder',id:'Yang Maha Kaya',val:14},
+  {ar:'الماجد',tr:'Macid - Şanı Büyük',en:'The Glorious',id:'Yang Maha Mulia',val:48},
+  {ar:'الواحد',tr:'Vahid - Tek',en:'The One',id:'Yang Maha Esa',val:19},
+  {ar:'الاحد',tr:'Ahad - Bir',en:'The Unique',id:'Yang Maha Tunggal',val:13},
+  {ar:'الصمد',tr:'Samed - Her Şeyin Kendisine Muhtaç Olduğu',en:'The Eternal',id:'Yang Maha Dibutuhkan',val:134},
+  {ar:'القادر',tr:'Kadir - Her Şeye Gücü Yeten',en:'The All-Powerful',id:'Yang Maha Berkuasa',val:305},
+  {ar:'المقتدر',tr:'Muktedir - Dilediğini Yapan',en:'The Prevailing',id:'Yang Maha Kuasa',val:744},
+  {ar:'المقدم',tr:'Mukaddim - İleri Alan',en:'The Expediter',id:'Yang Mendahulukan',val:184},
+  {ar:'المؤخر',tr:'Muahhir - Geri Bırakan',en:'The Delayer',id:'Yang Mengakhirkan',val:846},
+  {ar:'الأول',tr:'Evvel - İlk',en:'The First',id:'Yang Pertama',val:37},
+  {ar:'الآخر',tr:'Ahir - Son',en:'The Last',id:'Yang Terakhir',val:801},
+  {ar:'الظاهر',tr:'Zahir - Açık',en:'The Manifest',id:'Yang Nyata',val:1106},
+  {ar:'الباطن',tr:'Batın - Gizli',en:'The Hidden',id:'Yang Tersembunyi',val:62},
+  {ar:'الوالي',tr:'Vali - Her Şeyi İdare Eden',en:'The Governor',id:'Yang Menguasai',val:47},
+  {ar:'المتعالي',tr:'Müteali - Çok Yüce',en:'The Most Exalted',id:'Yang Mahatinggi',val:551},
+  {ar:'البر',tr:'Berr - İyilik ve Lütuf Sahibi',en:'The Source of Goodness',id:'Sumber Kebaikan',val:202},
+  {ar:'التواب',tr:'Tevvab - Tövbeleri Kabul Eden',en:'The Acceptor of Repentance',id:'Yang Menerima Taubat',val:409},
+  {ar:'المنتقم',tr:'Müntekim - Suçluları Cezalandıran',en:'The Avenger',id:'Yang Menghukum',val:630},
+  {ar:'العفو',tr:'Afüvv - Çok Affeden',en:'The Pardoner',id:'Yang Maha Pemaaf',val:156},
+  {ar:'الرؤوف',tr:'Rauf - Çok Şefkatli',en:'The Compassionate',id:'Yang Maha Pengasih',val:286},
+  {ar:'مالك الملك',tr:'Malik-ül Mülk - Mülkün Sahibi',en:'Owner of all Sovereignty',id:'Pemilik Kerajaan',val:212},
+  {ar:'ذو الجلال والاكرام',tr:'Zül Celali vel İkram - Celal ve İkram Sahibi',en:'Lord of Majesty and Bounty',id:'Pemilik Keagungan dan Kemuliaan',val:1117},
+  {ar:'المقسط',tr:'Muksit - Adaleti İle Davranan',en:'The Equitable',id:'Yang Maha Adil',val:209},
+  {ar:'الجامع',tr:'Cami - Toplayıcı',en:'The Gatherer',id:'Pengumpul',val:114},
+  {ar:'الغني',tr:'Ganiy - Hiçbir Şeye Muhtaç Olmayan',en:'The Self-Sufficient',id:'Yang Maha Kaya',val:1060},
+  {ar:'المغني',tr:'Mugniy - İhtiyaçtan Kurtaran',en:'The Enricher',id:'Yang Memberikan Kekayaan',val:1100},
+  {ar:'المانع',tr:'Mani - Engelleyen',en:'The Preventer',id:'Yang Mencegah',val:161},
+  {ar:'الضار',tr:'Darr - Zarar Veren',en:'The Distresser',id:'Yang Mendatangkan Mudarat',val:1001},
+  {ar:'النافع',tr:'Nafi - Fayda Veren',en:'The Benefactor',id:'Yang Memberi Manfaat',val:201},
+  {ar:'النور',tr:'Nur - Nurlandıran',en:'The Light',id:'Cahaya',val:256},
+  {ar:'الهادي',tr:'Hadi - Hidayet Eden',en:'The Guide',id:'Pemberi Petunjuk',val:20},
+  {ar:'البديع',tr:'Bedi - Eşsiz Yaratan',en:'The Incomparable',id:'Pencipta Yang Unik',val:86},
+  {ar:'الباقي',tr:'Baki - Kalıcı Olan',en:'The Everlasting',id:'Yang Kekal',val:113},
+  {ar:'الوارث',tr:'Varis - Her Şeyin Asıl Sahibi',en:'The Inheritor',id:'Yang Mewarisi',val:707},
+  {ar:'الرشيد',tr:'Reşid - Doğru Yola İleten',en:'The Guide to Right Path',id:'Yang Membimbing',val:514},
+  {ar:'الصبور',tr:'Sabur - Çok Sabırlı',en:'The Patient',id:'Yang Maha Sabar',val:298}
+];
+
+let p9Mode = 'exact';
+
+function p9SetMode(mode) {
+  p9Mode = mode;
+  document.getElementById('p9BtnExact').style.borderColor = mode==='exact'?'var(--emerald)':'var(--border)';
+  document.getElementById('p9BtnDeep').style.borderColor = mode==='deep'?'var(--emerald)':'var(--border)';
+  p9Search();
+}
+
+function p9Search() {
+  const raw = document.getElementById('p9Input').value.trim();
+  const res = document.getElementById('p9Results');
+  const info = document.getElementById('p9EbcedInfo');
+  if (!raw) { res.style.display='none'; info.style.display='none'; return; }
+  const {total} = computeEbced(raw);
+  if (!total) { res.style.display='none'; info.style.display='none'; return; }
+  document.getElementById('p9EbcedShow').textContent = total;
+  info.style.display = 'block';
+  const list = document.getElementById('p9List');
+  list.innerHTML = '';
+  let found = [];
+  if (p9Mode === 'exact') {
+    found = ASMA.filter(e => e.val === total);
+  } else {
+    found = ASMA.filter(e => Math.abs(e.val - total) <= 10);
+    found.sort((a,b) => Math.abs(a.val-total) - Math.abs(b.val-total));
+  }
+  if (found.length === 0) {
+    list.innerHTML = `<div class="msg msg-info">${t('p9_none')}</div>`;
+  } else {
+    found.forEach(esma => {
+      const card = document.createElement('div');
+      card.className = 'esma-card';
+      card.innerHTML = `
+        <div>
+          <div class="esma-ar">${esma.ar}</div>
+          <div class="esma-name">${esma[currentLang]||esma.tr}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="esma-val">${esma.val}</div>
+          ${p9Mode==='deep'?`<div style="font-size:0.6rem;color:var(--text-dim);">Δ${Math.abs(esma.val-total)}</div>`:''}
+        </div>`;
+      const detail = document.createElement('div');
+      detail.className = 'esma-detail';
+      detail.innerHTML = `
+        <div class="esma-meaning">${esma.ar}</div>
+        <div><strong style="color:var(--text-mid);">TR:</strong> ${esma.tr}</div>
+        <div><strong style="color:var(--text-mid);">EN:</strong> ${esma.en}</div>
+        <div><strong style="color:var(--text-mid);">ID:</strong> ${esma.id}</div>
+        <div style="margin-top:0.5rem;font-size:0.65rem;color:var(--text-dim);">Ebced: ${esma.val}</div>`;
+      const wrap = document.createElement('div');
+      wrap.appendChild(card);
+      wrap.appendChild(detail);
+      card.onclick = () => {
+        const isOpen = detail.classList.contains('open');
+        document.querySelectorAll('.esma-detail').forEach(d=>d.classList.remove('open'));
+        document.querySelectorAll('.esma-card').forEach(c=>c.classList.remove('selected'));
+        if (!isOpen) { detail.classList.add('open'); card.classList.add('selected'); }
+      };
+      list.appendChild(wrap);
+    });
+  }
+  document.getElementById('p9ResultTitle').textContent = `${t('p9_results')} (${found.length})`;
+  res.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════
+// PANEL 10: Vefk
+// ═══════════════════════════════════════════
+function p10BuildSelect() {
+  const sel = document.getElementById('p10Select');
+  if (!sel) return;
+  sel.innerHTML = `<option value="">— ${currentLang==='tr'?'Esma Seçiniz':currentLang==='en'?'Select Esma':'Pilih Asma'} —</option>`;
+  ASMA.forEach((e, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `${e.ar} — ${e[currentLang]||e.tr} (${e.val})`;
+    sel.appendChild(opt);
+  });
+}
+
+function p10Generate() {
+  const idx = document.getElementById('p10Select').value;
+  if (idx === '') {
+    document.getElementById('p10VefkCard').style.display='none';
+    document.getElementById('p10InfoRow').style.display='none';
+    return;
+  }
+  const esma = ASMA[parseInt(idx)];
+  document.getElementById('p10Ar').textContent = esma.ar;
+  document.getElementById('p10Ebced').textContent = esma.val;
+  document.getElementById('p10InfoRow').style.display='flex';
+  // Build 4x4 grid: fill 16 cells with esma letters cycling
+  const chars = [...esma.ar].filter(c => c.trim() !== '');
+  const grid = document.getElementById('p10Grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 16; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'vefk-cell';
+    cell.textContent = chars[i % chars.length];
+    cell.style.animationDelay = `${i * 0.04}s`;
+    grid.appendChild(cell);
+  }
+  document.getElementById('p10VefkCard').style.display='block';
+}
+
+// ═══════════════════════════════════════════
+// NEY SESİ (Web Audio API - Synthesized)
+// ═══════════════════════════════════════════
+let neyCtx = null, neyGain = null, neyPlaying = false;
+let neyOscs = [], neyTimeout = null;
+
+function initNey() {
+  // Tarayıcı politikası: ses ilk kullanıcı etkileşiminde başlar
+  const tryStart = () => {
+    if (!neyPlaying) {
+      startNey();
+    }
+  };
+  // Sayfa üzerindeki ilk tıklamada başlat
+  document.body.addEventListener('click', tryStart, { once: true });
+  document.body.addEventListener('keydown', tryStart, { once: true });
+  // Ney butonuna özel listener - kullanıcı direkt tıklarsa da çalışsın
+  document.getElementById('neyBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleNey();
+  }, { once: false });
+}
+
+function startNey() {
+  if (neyCtx) { neyCtx.close(); }
+  neyCtx = new (window.AudioContext || window.webkitAudioContext)();
+  neyGain = neyCtx.createGain();
+  neyGain.gain.value = 0.12;
+  neyGain.connect(neyCtx.destination);
+  neyPlaying = true;
+  document.getElementById('neyBtn').classList.add('playing');
+  document.getElementById('neyBtn').textContent = '🎵';
+  playNeyLoop();
+}
+
+function stopNey() {
+  neyPlaying = false;
+  clearTimeout(neyTimeout);
+  neyOscs.forEach(o => { try { o.stop(); } catch(e){} });
+  neyOscs = [];
+  if (neyGain) neyGain.gain.setTargetAtTime(0, neyCtx.currentTime, 0.3);
+  document.getElementById('neyBtn').classList.remove('playing');
+  document.getElementById('neyBtn').textContent = '🔇';
+}
+
+function toggleNey() {
+  if (neyPlaying) stopNey();
+  else startNey();
+}
+
+// Ney-like tone: fundamental + harmonics with breath noise
+function playNeyNote(freq, duration, startTime) {
+  if (!neyCtx || !neyPlaying) return;
+  const harmonics = [1, 2, 3, 4, 5, 6];
+  const ampls     = [0.5, 0.3, 0.2, 0.12, 0.07, 0.04];
+  harmonics.forEach((h, idx) => {
+    const osc = neyCtx.createOscillator();
+    const g   = neyCtx.createGain();
+    osc.type = idx === 0 ? 'sine' : 'sine';
+    osc.frequency.value = freq * h;
+    // amplitude envelope: slow attack, sustain, slow release
+    g.gain.setValueAtTime(0, startTime);
+    g.gain.linearRampToValueAtTime(ampls[idx], startTime + 0.4);
+    g.gain.setValueAtTime(ampls[idx], startTime + duration - 0.5);
+    g.gain.linearRampToValueAtTime(0, startTime + duration);
+    osc.connect(g);
+    g.connect(neyGain);
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+    neyOscs.push(osc);
+  });
+  // Breath noise
+  const bufLen = neyCtx.sampleRate * duration;
+  const buf = neyCtx.createBuffer(1, bufLen, neyCtx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * 0.015;
+  const noise = neyCtx.createBufferSource();
+  noise.buffer = buf;
+  const bpf = neyCtx.createBiquadFilter();
+  bpf.type = 'bandpass';
+  bpf.frequency.value = freq * 2;
+  bpf.Q.value = 0.8;
+  const ng = neyCtx.createGain();
+  ng.gain.setValueAtTime(0, startTime);
+  ng.gain.linearRampToValueAtTime(0.3, startTime + 0.3);
+  ng.gain.setValueAtTime(0.3, startTime + duration - 0.4);
+  ng.gain.linearRampToValueAtTime(0, startTime + duration);
+  noise.connect(bpf);
+  bpf.connect(ng);
+  ng.connect(neyGain);
+  noise.start(startTime);
+}
+
+// Makam-inspired note sequence (Rast makamı benzeri)
+const NEY_SEQUENCE = [
+  {freq:293.66,dur:3.5},{freq:329.63,dur:2.5},{freq:369.99,dur:3},{freq:392.00,dur:4},
+  {freq:440.00,dur:3},{freq:369.99,dur:2},{freq:329.63,dur:3},{freq:293.66,dur:5},
+  {freq:261.63,dur:3},{freq:293.66,dur:4},{freq:329.63,dur:3.5},{freq:392.00,dur:5},
+  {freq:440.00,dur:2.5},{freq:392.00,dur:3},{freq:329.63,dur:4},{freq:261.63,dur:6}
+];
+
+let neySeqIdx = 0;
+
+function playNeyLoop() {
+  if (!neyPlaying) return;
+  const note = NEY_SEQUENCE[neySeqIdx % NEY_SEQUENCE.length];
+  const now = neyCtx.currentTime;
+  playNeyNote(note.freq, note.dur, now);
+  neySeqIdx++;
+  // Small gap between notes
+  const gap = note.dur * 1000 - 200;
+  neyTimeout = setTimeout(() => { if (neyPlaying) playNeyLoop(); }, gap);
+}
+// ═══════════════════════════════════════════
+// INIT - En sonda, tüm fonksiyon ve veriler tanımlandıktan sonra
+// ═══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  buildArKeyboard();
+  buildEbcedTable();
+  renderElementTable();
+  p3ToggleColorInput();
+  p10BuildSelect();
+  setLang('tr');
+  initNey();
+});
+</script>
+</body>
+</html>
